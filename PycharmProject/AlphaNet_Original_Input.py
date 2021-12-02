@@ -1,5 +1,3 @@
-time_list = [20190401,20190630,20191231,20200601,20201231,20210630]
-
 from os import walk
 import pandas as pd
 import numpy as np
@@ -11,13 +9,9 @@ import torch.utils.data as Data
 import torch.optim as optim
 from tqdm import tqdm
 from torch.autograd import Variable
+import time
 
-dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
-dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
 
-day = 30
-stride = 10
-target = '5d_ret'
 
 class Convolutional(object):
     def __init__(self, data, stride):
@@ -274,7 +268,7 @@ class AlphaNet(nn.Module):
         y_pred = self.out(x)
         return y_pred
 
-for i in range(len(time_list)-1):
+def test(time_start, time_end):
     time_start = str(time_list[i])
     time_end = str(time_list[i+1])
     train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(time_start)]
@@ -389,16 +383,36 @@ for i in range(len(time_list)-1):
         pred = alphanet(data)
         pred_list.extend(pred.tolist())
         label_list.extend(label.tolist())
-    for i in range(1000):
-        print("pred: ", pred_list[i][0])
-        print("true: ",label_list[i][0])
-        print("---------------------")
+    # for i in range(1000):
+    #     print("pred: ", pred_list[i][0])
+    #     print("true: ",label_list[i][0])
+    #     print("---------------------")
     final = pd.concat([test_target,pd.DataFrame(pred_list)],axis=1)
     final = final[['timestamp','ticker',0]]
     alpha_name = 'AlphaNet'
     final.rename(columns={ 0 : alpha_name ,'ticker': 'symbol'}, inplace=True)
     final = final.reindex(columns=['symbol', 'timestamp', alpha_name])
     final.set_index(['symbol','timestamp']).to_csv('/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input/%s_%s.csv' % (time_start,time_end))
+    return None
+
+
+if __name__ == '__main__':
+    time_list = [20190401,20190630,20191231,20200601,20201231,20210630]
+    dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
+    dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
+    day = 30
+    stride = 10
+    target = '5d_ret'
+
+    # 多进程
+    start_time = time.time()
+    for i in range(len(time_list)-1):
+        start_time = time_list[i]
+        end_time = time_list[i+1]
+        p = Process(target=test, args=(start_time,end_time))
+        p.start()
+    multi_end = time.time()
+    print('\nMulti process cost time:', multi_end - multi_start)
 
 
 
