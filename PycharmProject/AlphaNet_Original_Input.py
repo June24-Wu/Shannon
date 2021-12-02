@@ -1,4 +1,4 @@
-time_list = [20191231,20200601,20201231,20210630]
+time_list = [20190401,20190630,20191231,20200601,20201231,20210630]
 
 from os import walk
 import pandas as pd
@@ -12,11 +12,12 @@ import torch.optim as optim
 from tqdm import tqdm
 from torch.autograd import Variable
 
-dataframe_list = pd.read_csv('/home/wuwenjun/Data/20201231_20211130.csv')
+dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
+dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
 
 day = 30
 stride = 10
-
+target = '5d_ret'
 
 class Convolutional(object):
     def __init__(self, data, stride):
@@ -274,11 +275,11 @@ class AlphaNet(nn.Module):
         return y_pred
 
 for i in range(len(time_list)-1):
-    time_start = time_list[i]
-    time_end = time_list[i+1]
-    train_frame = dataframe_list[dataframe_list['timestamp'] < time_start]
-    test_frame = dataframe_list[(dataframe_list['timestamp'] > time_start)
-                                & (dataframe_list['timestamp'] < time_end)]
+    time_start = str(time_list[i])
+    time_end = str(time_list[i+1])
+    train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(time_start)]
+    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(time_start))
+                                & (dataframe_list['timestamp'] < pd.to_datetime(time_end))]
 
     trainx , trainy = [] , []
     for ticker in tqdm(train_frame['ticker'].drop_duplicates()):
@@ -306,7 +307,7 @@ for i in range(len(time_list)-1):
             testx.append(array[i:i+day,:-1].T)
             testy.append(array[i+day-1][-1])
             temp = pd.DataFrame(one_data.iloc[i+day-1,:]).T
-            test_target = pd.concat([test_target,temp[['timestamp','ticker','target']]],axis=0)
+            test_target = pd.concat([test_target,temp[['timestamp','ticker',target]]],axis=0)
     #         test_target = pd.concat([test_target,pd.DataFrame(one_data.iloc[i+day-1,-1])])
     testx  , testy = np.array(testx) , np.array(testy).reshape(-1,1) # x = (153, 9, 30) , y = (153,1)
     testx = testx.reshape(testx.shape[0],1,testx.shape[1],testx.shape[2]) # x = (153, 1, 9, 30)
