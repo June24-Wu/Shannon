@@ -10,6 +10,7 @@ import torch.optim as optim
 from tqdm import tqdm
 from torch.autograd import Variable
 import time
+from multiprocessing import Process
 
 
 
@@ -269,8 +270,6 @@ class AlphaNet(nn.Module):
         return y_pred
 
 def test(time_start, time_end):
-    time_start = str(time_list[i])
-    time_end = str(time_list[i+1])
     train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(time_start)]
     test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(time_start))
                                 & (dataframe_list['timestamp'] < pd.to_datetime(time_end))]
@@ -412,7 +411,7 @@ if __name__ == '__main__':
         p = Process(target=test, args=(start_time,end_time))
         p.start()
     multi_end = time.time()
-    print('\nMulti process cost time:', multi_end - multi_start)
+    print('\nMulti process cost time:', multi_end - start_time)
 
 
 
