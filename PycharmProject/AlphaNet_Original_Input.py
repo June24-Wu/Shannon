@@ -409,7 +409,8 @@ if __name__ == '__main__':
         start_time = time_list[i]
         end_time = time_list[i+1]
         p = Process(target=test, args=(start_time,end_time))
-        p.start()
+    p.start()
+    p.join()
     multi_end = time.time()
     print('\nMulti process cost time:', multi_end - start_time)
 
