@@ -3,6 +3,8 @@ import time
 import pandas as pd
 from tqdm import tqdm
 import datetime
+import warnings
+warnings.filterwarnings('ignore')
 from datetime import timedelta
 
 def test(ticker):
@@ -24,7 +26,7 @@ def save(start_time,end_time):
                       datetime.datetime.strptime(str(end_time), '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d') + ".par")
     final_df[
         (final_df['timestamp'] >= start_time) &
-        (final_df['timestamp'] < end_time)].set_index(['timestamp','ticker']).to_parquet(
+        (final_df['timestamp'] < end_time)].to_parquet(
         output_path + datetime.datetime.strptime(str(start_time), '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d') + "_" +
                       datetime.datetime.strptime(str(end_time), '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d') + ".par"
     )
@@ -59,6 +61,7 @@ if __name__=="__main__":
     final_df.rename(columns={'0': 'timestamp', '1': 'ticker', str(final_df.shape[1] - 1): 'target'}, inplace=True)
 
     # Save Data
+    print("Start Save Data")
     num_cores = int(mp.cpu_count())
     pool = mp.Pool(num_cores)
     result = {}
