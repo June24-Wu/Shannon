@@ -311,7 +311,7 @@ def get_test_data(time_start, time_end):
 
     print("testx.shape: ", testx.shape)
     print("testy.shape: ", testy.shape)
-    test_target.reset_index(inplace=True, drop=True)
+    test_target.reset_index(inplace=True)
     return testx, testy, test_target
 
 
@@ -415,24 +415,14 @@ if __name__ == '__main__':
     dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
 
     # multiprocessing
-#     num_cores = 2
-#     pool = mp.Pool(num_cores)
     t1 = time.time()
 #     result = {}
     for i in range(len(time_list) - 1):
         start_time = pd.to_datetime(str(time_list[i]))
         end_time = pd.to_datetime(str(time_list[i+1]))
         main(start_time,end_time)
-#         result[i] = (pool.apply_async(main, args=(start_time, end_time)))
-#     pool.close()
-#     pool.join()
     t2 = time.time()
     print("running time", int(t2 - t1))
-
-#     df_list = []
-#     for i in tqdm(result):
-#         df_list.append(result[i].get())
-#     final_df = pd.concat(df_list).to_csv(output_path + "concated_result.csv")
 
 
 
