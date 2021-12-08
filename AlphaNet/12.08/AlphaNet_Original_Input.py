@@ -11,6 +11,7 @@ from tqdm import tqdm
 from torch.autograd import Variable
 import time
 from multiprocessing import Process
+from os import walk
 
 
 
@@ -269,46 +270,50 @@ class AlphaNet(nn.Module):
         y_pred = self.out(x)
         return y_pred
 
-def test(time_start, time_end):
-    train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(time_start)]
-    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(time_start))
-                                & (dataframe_list['timestamp'] < pd.to_datetime(time_end))]
+def get_train_data(time_start,time_end):
+    train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(str(time_start))]
+    train_frame.set_index(["timestamp","ticker"],inplace=True)
 
+    # Train X and Train Y
     trainx , trainy = [] , []
-    for ticker in tqdm(train_frame['ticker'].drop_duplicates()):
-        one_data = train_frame[train_frame['ticker'] == ticker]
-        one_data = one_data.set_index(['timestamp','ticker'])
-        array = np.array(one_data)
-        for i in range(0,array.shape[0] - day ,3): # ÆäÖÐ3 ´ú±íÈ¡ÊýµÄ²½³¤£¬ex.Ã¿Á½ÌìÈ¡Ò»´ÎÊý£¬²½³¤Îª3
-            trainx.append(array[i:i+day,:-1].T)
-            trainy.append(array[i+day-1][-1])
-    trainx  , trainy = np.array(trainx) , np.array(trainy).reshape(-1,1) # x = (153, 9, 30) , y = (153,1)
-    trainx = trainx.reshape(trainx.shape[0],1,trainx.shape[1],trainx.shape[2]) # x = (153, 1, 9, 30)
-    feat_num = trainx.shape[2]
+    trainx = np.array(train_frame.drop("target",axis=1))
+    trainx = trainx.reshape(trainx.shape[0],1,day,-1) # x = (153,1,30,9)
+    trainy = np.array(train_frame['target']).reshape(-1,1) # x = (153,1,9,30)
+    trainx = trainx.transpose(0,1,3,2) # x = (2555577, 1, 9, 30)
+    feat_num = trainx.shape[2] # 9
     del train_frame
     print("trainx.shape: ",trainx.shape)
     print("trainy.shape: ",trainy.shape)
+    return trainx , trainy , feat_num
 
-    testx,testy = [],[]
-    test_target = pd.DataFrame()
-    for ticker in tqdm(test_frame['ticker'].drop_duplicates()):
-        one_data = test_frame[test_frame['ticker'] == ticker]
-        one_data = one_data.set_index(['timestamp','ticker'])
-        array = np.array(one_data)
-        one_data = one_data.reset_index()
-        for i in range(0,array.shape[0] - day ,3): # ÆäÖÐ3 ´ú±íÈ¡ÊýµÄ²½³¤£¬ex.Ã¿Á½ÌìÈ¡Ò»´ÎÊý£¬²½³¤Îª3
-            testx.append(array[i:i+day,:-1].T)
-            testy.append(array[i+day-1][-1])
-            temp = pd.DataFrame(one_data.iloc[i+day-1,:]).T
-            test_target = pd.concat([test_target,temp[['timestamp','ticker',target]]],axis=0)
-    #         test_target = pd.concat([test_target,pd.DataFrame(one_data.iloc[i+day-1,-1])])
-    testx  , testy = np.array(testx) , np.array(testy).reshape(-1,1) # x = (153, 9, 30) , y = (153,1)
-    testx = testx.reshape(testx.shape[0],1,testx.shape[1],testx.shape[2]) # x = (153, 1, 9, 30)
+def get_test_data(time_start,time_end):
+    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(str(time_start)))
+                            & (dataframe_list['timestamp'] < pd.to_datetime(str(time_end)))]
+    test_frame.set_index(["timestamp","ticker"],inplace=True)
+
+    # Train X and Train Y
+    testx , testy = [] , []
+
+
+    test_target = pd.DataFrame(test_frame['target'])
+    testy = np.array(test_target).reshape(-1,1)
+
+
+    testx = np.array(test_frame.drop("target",axis=1))
+    testx = testx.reshape(testx.shape[0],1,day,-1) # x = (153,1,30,9)
+    trainy = np.array(train_frame['target']).reshape(-1,1) # x = (153,1,9,30)
+    testx = testx.transpose(0,1,3,2) # x = (2555577, 1, 9, 30)
     del test_frame
+
     print("testx.shape: ",testx.shape)
     print("testy.shape: ",testy.shape)
     test_target.reset_index(inplace = True,drop = True)
+    return testx , testy , test_target
 
+def main(time_start, time_end):
+    
+    trainx , trainy , feat_num = get_train_data(time_start, time_end)
+    testx , testy , test_target = get_test_data(time_start, time_end)
 
     """Convolutional """
     convolutional = Convolutional(trainx,10)
@@ -391,28 +396,35 @@ def test(time_start, time_end):
     alpha_name = 'AlphaNet'
     final.rename(columns={ 0 : alpha_name ,'ticker': 'symbol'}, inplace=True)
     final = final.reindex(columns=['symbol', 'timestamp', alpha_name])
-    final.set_index(['symbol','timestamp']).to_csv('/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input/%s_%s.csv' % (time_start,time_end))
+    final.set_index(['symbol','timestamp']).to_csv(output_path + '%s_%s.csv' % (time_start,time_end))
     return None
 
 
 if __name__ == '__main__':
+    output_path = "/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input_1208/"
     time_list = [20190401,20190630,20191231,20200601,20201231,20210630]
-    dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
-    dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
     day = 30
     stride = 10
-    target = '5d_ret'
+    
+    # Read Data
+    data_path = "/home/wuwenjun/Data/AlphaNet_Original_Input"
+    dataframe_list = pd.DataFrame()
+    for f, _, i in walk(data_path):
+        for j in tqdm(i):
+            dataframe_list = pd.concat([dataframe_list,pd.read_parquet(f + "/" + j)],axis=0)
+    dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
+    dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
 
-    # 多进程
-    start_time = time.time()
+    # multiprocessing
+    num_cores = int(mp.cpu_count())
+    pool = mp.Pool(num_cores)
+    t1 = time.time()
     for i in range(len(time_list)-1):
-        start_time = time_list[i]
-        end_time = time_list[i+1]
-        p = Process(target=test, args=(start_time,end_time))
-    p.start()
-    p.join()
-    multi_end = time.time()
-    print('\nMulti process cost time:', multi_end - start_time)
+        pool.apply_async(main, arg = (start_time,end_time) ))   #维持执行的进程总数为10，当一个进程执行完后启动一个新进程.
+    pool.close()
+    pool.join()
+    t2 = time.time()
+    print("running time", int(t2 - t1))
 
 
 
