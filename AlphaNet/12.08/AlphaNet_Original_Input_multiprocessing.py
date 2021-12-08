@@ -334,8 +334,6 @@ def main(time_start, time_end):
     print("testx.shape : ", testx.shape)
     print("testy.shape : ", testy.shape)
 
-
-
     trainx, trainy, testx, testy = torch.from_numpy(trainx), torch.from_numpy(trainy), torch.from_numpy(
         testx), torch.from_numpy(testy)
     print('trainx size: ', trainx.size())
@@ -400,6 +398,7 @@ def main(time_start, time_end):
     final.set_index(['symbol', 'timestamp']).to_csv(output_path + '%s_%s.csv' % (time_start, time_end))
     return None
 
+
 if __name__ == '__main__':
     output_path = "/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input_1208/"
     time_list = [20190401, 20190630, 20191231, 20200601, 20201231, 20210630]
@@ -415,17 +414,17 @@ if __name__ == '__main__':
     dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
 
     # multiprocessing
-#     num_cores = 2
-#     pool = mp.Pool(num_cores)
+    #     num_cores = 2
+    #     pool = mp.Pool(num_cores)
     t1 = time.time()
-#     result = {}
+    #     result = {}
     for i in range(len(time_list) - 1):
         start_time = pd.to_datetime(str(time_list[i]))
-        end_time = pd.to_datetime(str(time_list[i+1]))
-        main(start_time,end_time)
-#         result[i] = (pool.apply_async(main, args=(start_time, end_time)))
-#     pool.close()
-#     pool.join()
+        end_time = pd.to_datetime(str(time_list[i + 1]))
+        main(start_time, end_time)
+    #         result[i] = (pool.apply_async(main, args=(start_time, end_time)))
+    #     pool.close()
+    #     pool.join()
     t2 = time.time()
     print("running time", int(t2 - t1))
 

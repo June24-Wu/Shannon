@@ -1,3 +1,10 @@
+"""
+Convert to the format data for AlphaNet
+
+Input: timestamp , ticker , factor1 , factor2 .......... factor_n , target
+
+"""
+
 import multiprocessing as mp
 import time
 import pandas as pd

@@ -10,8 +10,8 @@ import torch.optim as optim
 from tqdm import tqdm
 from torch.autograd import Variable
 import time
-from multiprocessing import Process
-
+import multiprocessing as mp
+from os import walk
 
 
 class Convolutional(object):
@@ -45,7 +45,7 @@ class Convolutional(object):
         conv6 = self.ts_decaylinear(self.data, self.stride, self.feat_num, self.step_list).to(torch.float)
         bc6 = batch2(conv6)
 
-        feat_cat = torch.cat([bc1, bc2, bc3, bc4, bc5, bc6], axis=1)  # ÌØÕ÷¾ÛºÏ
+        feat_cat = torch.cat([bc1, bc2, bc3, bc4, bc5, bc6], axis=1)  # ¨¬??¡Â??o?
         shape = feat_cat.shape
         feat_cat = feat_cat.reshape(shape[0], 1, shape[1], shape[2])
         print("Convolutional shape: ", feat_cat.shape)
@@ -69,7 +69,7 @@ class Convolutional(object):
         return num, num_rev
 
     def generate_Step_List(self, data_length, stride):
-        # ¹¹½¨²½³¤ÁÐ±í£¬Èç¹ûÊý¾Ý³¤¶È²»ÄÜÕû³ý£¬ÔòÈ¡Ê£ÏÂ³¤¶È£¬Èç¹ûÊ£ÏÂ³¤¶ÈÐ¡ÓÚ5£¬ÔòÓëÉÏÒ»²½½áºÏÒ»Æð
+        # 11?¡§2?3¡è¨¢D¡À¨ª¡ê?¨¨?1?¨ºy?Y3¡è?¨¨2??¨¹??3y¡ê??¨°¨¨?¨º¡ê??3¡è?¨¨¡ê?¨¨?1?¨º¡ê??3¡è?¨¨D?¨®¨²5¡ê??¨°¨®?¨¦?¨°?2??¨¢o?¨°??e
         if data_length % stride == 0:
             step_list = list(range(0, data_length + stride, stride))
         elif data_length % stride <= 5:
@@ -83,10 +83,10 @@ class Convolutional(object):
     """ Main Extraction"""
 
     def ts_cov4d(self, data, stride, num, num_rev, step_list):
-        '''¼ÆËã4Î¬Êý¾ÝµÄÐ­·½²î'''
+        '''????4??¨ºy?Y¦Ì?D-¡¤?2?'''
         '''data:[N,C,H,W],,W:price length,N:batch size'''
         l = []
-        # ¼ÆËãµÄ¹ý³ÌÖÐÎñ±Ø±£³Ökeepdims=True
+        # ????¦Ì?1y3¨¬?D??¡À?¡À¡ê3?keepdims=True
         for i in tqdm(range(len(step_list) - 1)):
             start = step_list[i]
             end = step_list[i + 1]
@@ -106,7 +106,7 @@ class Convolutional(object):
         return final
 
     def ts_corr4d(self, data, stride, num, num_rev, step_list, cov):
-        '''¼ÆËã4Î¬Êý¾ÝµÄÏà¹ØÏµÊý'''
+        '''????4??¨ºy?Y¦Ì??¨¤1??¦Ì¨ºy'''
         '''data:[N,C,H,W],,W:price length,N:batch size'''
         l = []
         for i in tqdm(range(len(step_list) - 1)):
@@ -117,7 +117,7 @@ class Convolutional(object):
             std1 = sub_data1.std(axis=4, keepdims=True)
             std2 = sub_data2.std(axis=4, keepdims=True)
             std = (std1 * std2).mean(axis=3, keepdims=True)
-            del std1, std2  # ÊÍ·ÅÄÚ´æ
+            del std1, std2  # ¨º¨ª¡¤??¨²¡ä?
             l.append(std)
         std = np.squeeze(np.array(l)).transpose(1, 2, 0).reshape(-1, self.conv_feat, len(step_list) - 1)
         std[std == 0] = 1e-9
@@ -193,144 +193,155 @@ class Convolutional(object):
         print("------Finished ts_decaylinear----output shape: ", final.shape)
         return final
 
+
 class Pooling(object):
-    def __init__(self,data,stride):
-        if len(data.shape)!=4:
+    def __init__(self, data, stride):
+        if len(data.shape) != 4:
             raise Exception('Input data dimensions should be [N,C,H,W]')
         self.data = data.detach().numpy()
         self.stride = stride
         self.data_length = data.shape[3]
-        self.feat_num = data.shape[2] # 9
-        self.step_list = self.generate_Step_List(self.data_length,self.stride)
-        self.extracted_data = self.Extraction(self.data,self.feat_num,self.stride)
-    def Extraction(self,data,feat_num,stride):
+        self.feat_num = data.shape[2]  # 9
+        self.step_list = self.generate_Step_List(self.data_length, self.stride)
+        self.extracted_data = self.Extraction(self.data, self.feat_num, self.stride)
+
+    def Extraction(self, data, feat_num, stride):
         print("------Start Pooling------")
         # Pooling
-        ts_max = self.ts_pool(data,self.stride,self.feat_num,self.step_list,method = 'max')
-        ts_max = nn.BatchNorm1d(self.feat_num,affine = True)(ts_max)
-        ts_min = self.ts_pool(data ,self.stride,self.feat_num,self.step_list,method = 'min')
-        ts_min = nn.BatchNorm1d(self.feat_num,affine = True)(ts_min)
-        ts_mean = self.ts_pool(data ,self.stride,self.feat_num,self.step_list,method = 'mean')
-        ts_mean = nn.BatchNorm1d(self.feat_num,affine = True)(ts_mean)
-        data_pool = torch.cat([ts_max,ts_min,ts_mean],axis = 1)
-        data_pool = data_pool.flatten(start_dim = 1)
-        print("Pooling shape: ",data_pool.shape )
+        ts_max = self.ts_pool(data, self.stride, self.feat_num, self.step_list, method='max')
+        ts_max = nn.BatchNorm1d(self.feat_num, affine=True)(ts_max)
+        ts_min = self.ts_pool(data, self.stride, self.feat_num, self.step_list, method='min')
+        ts_min = nn.BatchNorm1d(self.feat_num, affine=True)(ts_min)
+        ts_mean = self.ts_pool(data, self.stride, self.feat_num, self.step_list, method='mean')
+        ts_mean = nn.BatchNorm1d(self.feat_num, affine=True)(ts_mean)
+        data_pool = torch.cat([ts_max, ts_min, ts_mean], axis=1)
+        data_pool = data_pool.flatten(start_dim=1)
+        print("Pooling shape: ", data_pool.shape)
         return data_pool
-    def generate_Step_List(self,data_length,stride):
-        # ¹¹½¨²½³¤ÁÐ±í£¬Èç¹ûÊý¾Ý³¤¶È²»ÄÜÕû³ý£¬ÔòÈ¡Ê£ÏÂ³¤¶È£¬Èç¹ûÊ£ÏÂ³¤¶ÈÐ¡ÓÚ5£¬ÔòÓëÉÏÒ»²½½áºÏÒ»Æð
+
+    def generate_Step_List(self, data_length, stride):
+        # 11?¡§2?3¡è¨¢D¡À¨ª¡ê?¨¨?1?¨ºy?Y3¡è?¨¨2??¨¹??3y¡ê??¨°¨¨?¨º¡ê??3¡è?¨¨¡ê?¨¨?1?¨º¡ê??3¡è?¨¨D?¨®¨²5¡ê??¨°¨®?¨¦?¨°?2??¨¢o?¨°??e
         if data_length % stride == 0:
-            step_list = list(range(0,data_length+stride,stride))
-        elif data_length % stride<=5:
+            step_list = list(range(0, data_length + stride, stride))
+        elif data_length % stride <= 5:
             mod = data_length % stride
-            step_list = list(range(0,data_length-stride,stride))+[data_length]
+            step_list = list(range(0, data_length - stride, stride)) + [data_length]
         else:
             mod = data_length % stride
-            step_list = list(range(0,data_length+stride-mod,stride))+[data_length]
+            step_list = list(range(0, data_length + stride - mod, stride)) + [data_length]
         return step_list
-    def ts_pool(self,data,stride,feat_num,step_list,method):
+
+    def ts_pool(self, data, stride, feat_num, step_list, method):
         if type(data) == torch.Tensor:
             data = data.detach().numpy()
         if data.shape[-1] <= stride:
-            step_list = [0,data.shape[-1]]
-        if len(data.shape)!=4:
+            step_list = [0, data.shape[-1]]
+        if len(data.shape) != 4:
             raise Exception('Input data dimensions should be [N,C,H,W]')
         l = []
-        for i in tqdm(range(len(step_list)-1)):
+        for i in tqdm(range(len(step_list) - 1)):
             start = step_list[i]
-            end = step_list[i+1]
+            end = step_list[i + 1]
             if method == 'max':
-                sub_data1 = data[:,:,:,start:end].max(axis = 3,keepdims = True)
+                sub_data1 = data[:, :, :, start:end].max(axis=3, keepdims=True)
             if method == 'min':
-                sub_data1 = data[:,:,:,start:end].min(axis = 3,keepdims = True)
+                sub_data1 = data[:, :, :, start:end].min(axis=3, keepdims=True)
             if method == 'mean':
-                sub_data1 = data[:,:,:,start:end].mean(axis = 3,keepdims = True)
+                sub_data1 = data[:, :, :, start:end].mean(axis=3, keepdims=True)
             l.append(sub_data1)
         try:
-            pool_data = np.squeeze(np.array(l)).transpose(1,2,0).reshape(-1,feat_num,len(step_list) - 1)
+            pool_data = np.squeeze(np.array(l)).transpose(1, 2, 0).reshape(-1, feat_num, len(step_list) - 1)
         except:
-            pool_data = np.squeeze(np.array(l)).reshape(-1,feat_num,len(step_list) - 1)
+            pool_data = np.squeeze(np.array(l)).reshape(-1, feat_num, len(step_list) - 1)
         return torch.from_numpy(pool_data)
 
+
 class AlphaNet(nn.Module):
-    def __init__(self,factor_num,fully_connect_layer_neural):
-        # super ¸¸Àà£¬µ÷ÓÃ¸¸ÀàµÄ¹¹Ôì£¬ÕâÒ»²½±ØÐëÓÐ
-        # µÚÒ»¸ö²ÎÊýÎª¶¨ÒåÀàµÄÃû³Æ£¬µÚ¶þ¸öÎªself
-        super(AlphaNet,self).__init__()
-        self.fc1_neuron = (factor_num * (factor_num -1) + 4 * factor_num)* 3
+    def __init__(self, factor_num, fully_connect_layer_neural):
+        # super ??¨¤¨¤¡ê?¦Ì¡Â¨®???¨¤¨¤¦Ì?11?¨¬¡ê??a¨°?2?¡À?D?¨®D
+        # ¦Ì¨²¨°???2?¨ºy?a?¡§¨°?¨¤¨¤¦Ì???3?¡ê?¦Ì¨²?t???aself
+        super(AlphaNet, self).__init__()
+        self.fc1_neuron = (factor_num * (factor_num - 1) + 4 * factor_num) * 3
         self.fc2_neuron = fully_connect_layer_neural
-        self.fc1 = torch.nn.Linear(self.fc1_neuron,self.fc2_neuron)
+        self.fc1 = torch.nn.Linear(self.fc1_neuron, self.fc2_neuron)
         self.dropout = nn.Dropout(0.3)
         self.relu = nn.ReLU()
-        self.out = nn.Linear(self.fc2_neuron,1)
-    def forward(self,x):
+        self.out = nn.Linear(self.fc2_neuron, 1)
+
+    def forward(self, x):
         x = self.fc1(x)
         x = self.relu(x)
         x = self.dropout(x)
         y_pred = self.out(x)
         return y_pred
 
-def test(time_start, time_end):
-    train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(time_start)]
-    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(time_start))
-                                & (dataframe_list['timestamp'] < pd.to_datetime(time_end))]
 
-    trainx , trainy = [] , []
-    for ticker in tqdm(train_frame['ticker'].drop_duplicates()):
-        one_data = train_frame[train_frame['ticker'] == ticker]
-        one_data = one_data.set_index(['timestamp','ticker'])
-        array = np.array(one_data)
-        for i in range(0,array.shape[0] - day ,3): # ÆäÖÐ3 ´ú±íÈ¡ÊýµÄ²½³¤£¬ex.Ã¿Á½ÌìÈ¡Ò»´ÎÊý£¬²½³¤Îª3
-            trainx.append(array[i:i+day,:-1].T)
-            trainy.append(array[i+day-1][-1])
-    trainx  , trainy = np.array(trainx) , np.array(trainy).reshape(-1,1) # x = (153, 9, 30) , y = (153,1)
-    trainx = trainx.reshape(trainx.shape[0],1,trainx.shape[1],trainx.shape[2]) # x = (153, 1, 9, 30)
-    feat_num = trainx.shape[2]
+def get_train_data(time_start, time_end):
+    train_frame = dataframe_list[dataframe_list['timestamp'] < pd.to_datetime(str(time_start))]
+    train_frame.set_index(["timestamp", "ticker"], inplace=True)
+
+    # Train X and Train Y
+    trainx, trainy = [], []
+    trainx = np.array(train_frame.drop("target", axis=1))
+    trainx = trainx.reshape(trainx.shape[0], 1, day, -1)  # x = (153,1,30,9)
+    trainx = trainx.transpose(0, 1, 3, 2)  # x = (2555577, 1, 9, 30)
+    trainy = np.array(train_frame['target']).reshape(-1, 1)  # x = (153,1,9,30)
+
+    feat_num = trainx.shape[2]  # 9
     del train_frame
-    print("trainx.shape: ",trainx.shape)
-    print("trainy.shape: ",trainy.shape)
+    print("trainx.shape: ", trainx.shape)
+    print("trainy.shape: ", trainy.shape)
+    return trainx, trainy, feat_num
 
-    testx,testy = [],[]
-    test_target = pd.DataFrame()
-    for ticker in tqdm(test_frame['ticker'].drop_duplicates()):
-        one_data = test_frame[test_frame['ticker'] == ticker]
-        one_data = one_data.set_index(['timestamp','ticker'])
-        array = np.array(one_data)
-        one_data = one_data.reset_index()
-        for i in range(0,array.shape[0] - day ,3): # ÆäÖÐ3 ´ú±íÈ¡ÊýµÄ²½³¤£¬ex.Ã¿Á½ÌìÈ¡Ò»´ÎÊý£¬²½³¤Îª3
-            testx.append(array[i:i+day,:-1].T)
-            testy.append(array[i+day-1][-1])
-            temp = pd.DataFrame(one_data.iloc[i+day-1,:]).T
-            test_target = pd.concat([test_target,temp[['timestamp','ticker',target]]],axis=0)
-    #         test_target = pd.concat([test_target,pd.DataFrame(one_data.iloc[i+day-1,-1])])
-    testx  , testy = np.array(testx) , np.array(testy).reshape(-1,1) # x = (153, 9, 30) , y = (153,1)
-    testx = testx.reshape(testx.shape[0],1,testx.shape[1],testx.shape[2]) # x = (153, 1, 9, 30)
+
+def get_test_data(time_start, time_end):
+    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(str(time_start)))
+                                & (dataframe_list['timestamp'] < pd.to_datetime(str(time_end)))]
+    test_frame.set_index(["timestamp", "ticker"], inplace=True)
+
+    # Test X and Test Y
+
+    test_target = pd.DataFrame(test_frame['target'])
+    testy = np.array(test_target).reshape(-1, 1)
+
+    testx = np.array(test_frame.drop("target", axis=1))
+    testx = testx.reshape(testx.shape[0], 1, day, -1)  # x = (153,1,30,9)
+    testx = testx.transpose(0, 1, 3, 2)  # x = (2555577, 1, 9, 30)
     del test_frame
-    print("testx.shape: ",testx.shape)
-    print("testy.shape: ",testy.shape)
-    test_target.reset_index(inplace = True,drop = True)
 
+    print("testx.shape: ", testx.shape)
+    print("testy.shape: ", testy.shape)
+    test_target.reset_index(inplace=True, drop=True)
+    return testx, testy, test_target
+
+
+def main(time_start, time_end):
+    trainx, trainy, feat_num = get_train_data(time_start, time_end)
+    testx, testy, test_target = get_test_data(time_start, time_end)
 
     """Convolutional """
-    convolutional = Convolutional(trainx,10)
+    convolutional = Convolutional(trainx, 10)
     feat_cat = convolutional.extracted_data
-    pooling = Pooling(feat_cat,3)
+    pooling = Pooling(feat_cat, 3)
     trainx = pooling.extracted_data.detach().numpy()
-    print("trainx.shape : ",trainx.shape)
-    print("trainy.shape : ",trainy.shape)
+    print("trainx.shape : ", trainx.shape)
+    print("trainy.shape : ", trainy.shape)
 
-    convolutional = Convolutional(testx,10)
+    convolutional = Convolutional(testx, 10)
     feat_cat = convolutional.extracted_data
-    pooling = Pooling(feat_cat,3)
+    pooling = Pooling(feat_cat, 3)
     testx = pooling.extracted_data.detach().numpy()
-    print("testx.shape : ",testx.shape)
-    print("testy.shape : ",testy.shape)
+    print("testx.shape : ", testx.shape)
+    print("testy.shape : ", testy.shape)
 
-    trainx , trainy  , testx , testy = torch.from_numpy(trainx) , torch.from_numpy(trainy) , torch.from_numpy(testx) , torch.from_numpy(testy)
+
+
+    trainx, trainy, testx, testy = torch.from_numpy(trainx), torch.from_numpy(trainy), torch.from_numpy(
+        testx), torch.from_numpy(testy)
     print('trainx size: ', trainx.size())
     print('trainy size: ', trainy.size())
     print('testx size: ', testx.size())
     print('testy size: ', testy.size())
-
 
     train_dataset = Data.TensorDataset(trainx, trainy)
     test_dataset = Data.TensorDataset(testx, testy)
@@ -349,8 +360,7 @@ def test(time_start, time_end):
         num_workers=2
     )
 
-
-    alphanet = AlphaNet(feat_num,30)
+    alphanet = AlphaNet(feat_num, 30)
     print(alphanet)
     total_length = trainx.shape[0]
     LR = 0.000001
@@ -358,21 +368,20 @@ def test(time_start, time_end):
     optimizer = optim.RMSprop(alphanet.parameters(), lr=LR, alpha=0.9)
     epoch_num = 30
 
-
     for epoch in tqdm(range(epoch_num)):
         total_loss = 0
-        for _,(data, label) in enumerate(train_loader):
+        for _, (data, label) in enumerate(train_loader):
             data = Variable(data).float()
             pred = alphanet(data)
             label = Variable(label).float()
-    #         label = label.unsqueeze(1)
+            #         label = label.unsqueeze(1)
             loss = loss_function(pred, label)
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
             total_loss += loss.item()
         total_loss = total_loss * batch_size / total_length
-        print('Epoch: ', epoch+1, ' loss: ', total_loss)
+        print('Epoch: ', epoch + 1, ' loss: ', total_loss)
 
     pred_list = []
     label_list = []
@@ -386,33 +395,47 @@ def test(time_start, time_end):
     #     print("pred: ", pred_list[i][0])
     #     print("true: ",label_list[i][0])
     #     print("---------------------")
-    final = pd.concat([test_target,pd.DataFrame(pred_list)],axis=1)
-    final = final[['timestamp','ticker',0]]
+    final = pd.concat([test_target, pd.DataFrame(pred_list)], axis=1)
+    final = final[['timestamp', 'ticker', 0]]
     alpha_name = 'AlphaNet'
-    final.rename(columns={ 0 : alpha_name ,'ticker': 'symbol'}, inplace=True)
+    final.rename(columns={0: alpha_name, 'ticker': 'symbol'}, inplace=True)
     final = final.reindex(columns=['symbol', 'timestamp', alpha_name])
-    final.set_index(['symbol','timestamp']).to_csv('/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input/%s_%s.csv' % (time_start,time_end))
+    final.set_index(['symbol', 'timestamp']).to_csv(output_path + '%s_%s.csv' % (time_start, time_end))
     return None
 
-
 if __name__ == '__main__':
-    time_list = [20190401,20190630,20191231,20200601,20201231,20210630]
-    dataframe_list = pd.read_csv('/home/wuwenjun/Data/AlphaNet_Original_Input.csv')
-    dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
+    output_path = "/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input_1208/"
+    time_list = [20190401, 20190630, 20191231, 20200601, 20201231, 20210630]
     day = 30
     stride = 10
-    target = '5d_ret'
 
-    # 多进程
-    start_time = time.time()
-    for i in range(len(time_list)-1):
-        start_time = time_list[i]
-        end_time = time_list[i+1]
-        p = Process(target=test, args=(start_time,end_time))
-    p.start()
-    p.join()
-    multi_end = time.time()
-    print('\nMulti process cost time:', multi_end - start_time)
+    # Read Data
+    data_path = "/home/wuwenjun/Data/AlphaNet_Original_Input/"
+    dataframe_list = pd.DataFrame()
+    for f, _, i in walk(data_path):
+        for j in tqdm(i):
+            dataframe_list = pd.concat([dataframe_list, pd.read_parquet(f + j)], axis=0)
+    dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
+
+    # multiprocessing
+#     num_cores = 2
+#     pool = mp.Pool(num_cores)
+    t1 = time.time()
+#     result = {}
+    for i in range(len(time_list) - 1):
+        start_time = pd.to_datetime(str(time_list[i]))
+        end_time = pd.to_datetime(str(time_list[i+1]))
+        main(start_time,end_time)
+#         result[i] = (pool.apply_async(main, args=(start_time, end_time)))
+#     pool.close()
+#     pool.join()
+    t2 = time.time()
+    print("running time", int(t2 - t1))
+
+#     df_list = []
+#     for i in tqdm(result):
+#         df_list.append(result[i].get())
+#     final_df = pd.concat(df_list).to_csv(output_path + "concated_result.csv")
 
 
 
