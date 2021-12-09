@@ -295,7 +295,7 @@ def get_train_data(time_start, time_end):
 
 
 def get_test_data(time_start, time_end):
-    test_frame = dataframe_list[(dataframe_list['timestamp'] >= pd.to_datetime(str(time_start)))
+    test_frame = dataframe_list[(dataframe_list['timestamp'] > pd.to_datetime(str(time_start)))
                                 & (dataframe_list['timestamp'] < pd.to_datetime(str(time_end)))]
     test_frame.set_index(["timestamp", "ticker"], inplace=True)
 
@@ -334,17 +334,74 @@ def main(time_start, time_end):
     print("testx.shape : ", testx.shape)
     print("testy.shape : ", testy.shape)
 
+
+
     trainx, trainy, testx, testy = torch.from_numpy(trainx), torch.from_numpy(trainy), torch.from_numpy(
         testx), torch.from_numpy(testy)
-    torch.save(trainx, output_path + "/trainx/" + '%s_%s.pt' % (time_start, time_end))
-    torch.save(trainy, output_path + "/trainy/" + '%s_%s.pt' % (time_start, time_end))
-    torch.save(testx, output_path + "/testx/" + '%s_%s.pt' % (time_start, time_end))
-    torch.save(testy, output_path + "/testy/" + '%s_%s.pt' % (time_start, time_end))
-    test_target.to_csv(output_path + "/test_target/" + '%s_%s.csv' % (time_start, time_end))
+    print('trainx size: ', trainx.size())
+    print('trainy size: ', trainy.size())
+    print('testx size: ', testx.size())
+    print('testy size: ', testy.size())
+
+    train_dataset = Data.TensorDataset(trainx, trainy)
+    test_dataset = Data.TensorDataset(testx, testy)
+    batch_size = 256
+    train_loader = Data.DataLoader(
+        dataset=train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=5
+    )
+
+    test_loader = Data.DataLoader(
+        dataset=test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=5
+    )
+
+    alphanet = AlphaNet(feat_num, 30)
+    print(alphanet)
+    total_length = trainx.shape[0]
+    LR = 0.00001
+    loss_function = nn.MSELoss()
+    optimizer = optim.RMSprop(alphanet.parameters(), lr=LR, alpha=0.9)
+    epoch_num = 20
+
+    for epoch in tqdm(range(epoch_num)):
+        total_loss = 0
+        for _, (data, label) in enumerate(train_loader):
+            data = Variable(data).float()
+            pred = alphanet(data)
+            label = Variable(label).float()
+            #         label = label.unsqueeze(1)
+            loss = loss_function(pred, label)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            total_loss += loss.item()
+        total_loss = total_loss * batch_size / total_length
+        print('Epoch: ', epoch + 1, ' loss: ', total_loss)
+
+    pred_list = []
+    label_list = []
+
+    for _, (data, label) in enumerate(test_loader):
+        data = Variable(data).float()
+        pred = alphanet(data)
+        pred_list.extend(pred.tolist())
+        label_list.extend(label.tolist())
+
+    final = pd.concat([test_target, pd.DataFrame(pred_list)], axis=1)
+    alpha_name = 'AlphaNetV1_Original_Input_1208'
+    final.rename(columns={0: alpha_name, 'ticker': 'symbol'}, inplace=True)
+    final = final.reindex(columns=['symbol', 'timestamp', alpha_name, 'target'])
+    final.set_index(['symbol', 'timestamp']).to_csv(output_path + "result/" + '%s_%s.csv' % (time_start, time_end))
     return None
+
 if __name__ == '__main__':
     output_path = "/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input_1208/"
-    time_list = [20190101,20190630,20200101,20200630,20210101,20210630]
+    time_list = [20210101,20210630]
     day = 30
     stride = 10
 
@@ -355,14 +412,14 @@ if __name__ == '__main__':
         for j in tqdm(i):
             dataframe_list = pd.concat([dataframe_list, pd.read_parquet(f + j)], axis=0)
     dataframe_list['timestamp'] = pd.to_datetime(dataframe_list['timestamp'])
+
+    # multiprocessing
     t1 = time.time()
-    pool = mp.Pool(2)
+#     result = {}
     for i in range(len(time_list) - 1):
         start_time = pd.to_datetime(str(time_list[i]))
-        end_time = pd.to_datetime(str(time_list[i + 1]))
-        pool.apply_async(main, args=(start_time, end_time))
-    pool.close()
-    pool.join()
+        end_time = pd.to_datetime(str(time_list[i+1]))
+        main(start_time,end_time)
     t2 = time.time()
     print("running time", int(t2 - t1))
 
