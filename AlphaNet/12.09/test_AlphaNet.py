@@ -393,14 +393,15 @@ def main(time_start, time_end):
         label_list.extend(label.tolist())
 
     final = pd.concat([test_target, pd.DataFrame(pred_list)], axis=1)
-    alpha_name = 'AlphaNetV1_Original_Input_1208'
+
     final.rename(columns={0: alpha_name, 'ticker': 'symbol'}, inplace=True)
     final = final.reindex(columns=['symbol', 'timestamp', alpha_name, 'target'])
     final.set_index(['symbol', 'timestamp']).to_csv(output_path + "result/" + '%s_%s.csv' % (time_start, time_end))
     return None
 
 if __name__ == '__main__':
-    output_path = "/home/wuwenjun/Alpha_Factor/AlphaNetV1_Original_Input_1208/"
+    alpha_name = 'AlphaNetV1_Original_Input_1208'
+    output_path = "/home/wuwenjun/Alpha_Factor/" + alpha_name + "/"
     time_list = [20210101,20210630]
     day = 30
     stride = 10
