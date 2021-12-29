@@ -1,17 +1,7 @@
-# coding=utf-8
-# This is a sample Python script.
+import AlphaNet_Original_Input
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+Alpha_Name = "AlphaNet_Original_Input_10d_return"
+start_time = "2019-01-01"
+feat_num = 9
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print("Hi, {0}".format(name))  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+AlphaNet_Original_Input.AlphaNet_Train_Test(Alpha_Name,start_time,feat_num)
