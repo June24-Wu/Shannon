@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/Fit_Transform.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/Models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AlphaNet/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Test/12.30/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/Fit_Transform.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/Model_Loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/12.30/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.30/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
