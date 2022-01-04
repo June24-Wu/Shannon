@@ -15,9 +15,10 @@ import multiprocessing as mp
 
 
 class Model_Loader(object):
-    def __init__(self,model,optimizer,device = None):
+    def __init__(self, model, optimizer, device=None):
         if device == None:
-            raise ValueError(r"please indicate device by running device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')")
+            raise ValueError(
+                r"please indicate device by running device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')")
         self.device = device
         self.model = model.to(self.device)
         self.best_model = model.to(self.device)
@@ -25,7 +26,8 @@ class Model_Loader(object):
         self.loss_list = []
         self.min_loss = float("inf")
 
-    def fit(self,dataloader, loss_function, epoch_num, save_path=None):
+
+    def fit(self, dataloader, loss_function, epoch_num, save_path=None):
         print("Learning Rate is :", self.optimizer.state_dict()['param_groups'][0]["lr"])
         loss_function = loss_function.to(self.device)
 
@@ -59,7 +61,7 @@ class Model_Loader(object):
             plt.savefig(save_path + "loss.png")
         return self.model
 
-    def transform(self,dataloader):
+    def transform(self, dataloader):
         pred_list = []
         label_list = []
         for _, (data, label) in enumerate(dataloader):
