@@ -1,5 +1,7 @@
 __all__ = ["Models", "Model_Loader"]
 
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -18,15 +20,16 @@ class Model_Loader(object):
             raise ValueError(r"please indicate device by running device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')")
         self.device = device
         self.model = model.to(self.device)
+        self.best_model = model.to(self.device)
         self.optimizer = optimizer
-
+        self.loss_list = []
+        self.min_loss = float("inf")
 
         def fit(self,dataloader, loss_function, epoch_num, save_path=None):
             print("Learning Rate is :", self.optimizer.state_dict()['param_groups'][0]["lr"])
             loss_function = loss_function.to(self.device)
-            loss_list = []
-
-            min_loss = float("inf")
+            
+            
             for epoch in tqdm(range(epoch_num)):
                 total_loss = 0
                 for _, (inputs, outputs) in enumerate(dataloader):
@@ -44,13 +47,17 @@ class Model_Loader(object):
                     total_loss += loss.item()
                 total_loss = total_loss * dataloader.batch_size / dataloader.dataset.tensors[0].shape[0]
                 print('Epoch: ', epoch + 1, ' loss: ', total_loss)
-                loss_list.append(total_loss)
-                if total_loss < min_loss and save_path is not None:
-                    torch.save(self.model, save_path + "best_model.tar")
-                np.save(save_path + "loss.npy", loss_list)
-            torch.save(self.model, save_path + "model.tar")
-            plt.plot(loss_list, color='r')
-            plt.savefig(save_path + "loss.png")
+                self.loss_list.append(total_loss)
+                if save_path is not None:
+                    np.save(save_path + "loss.npy", loss_list)
+                    if total_loss < self.min_loss:
+                        self.best_model = self.model
+                        torch.save(self.model, save_path + "best_model.tar")
+                        self.min_loss = total_loss
+            if save_path is not None:
+                torch.save(self.model, save_path + "model.tar")
+                plt.plot(self.loss_list, color='r')
+                plt.savefig(save_path + "loss.png")
             return self.model
         def transform(self,dataloader):
             pred_list = []
@@ -60,4 +67,6 @@ class Model_Loader(object):
                 pred = self.model(data).to(self.device)
                 pred_list.extend(pred.tolist())
                 label_list.extend(label.tolist())
-
+            self.testy_pred = pd.DataFrame(pred_list)
+            self.testy = pd.DataFrame(label_list)
+            return self.testy_pred
