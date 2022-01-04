@@ -4,6 +4,10 @@
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/.ipynb_checkpoints/AlphaNet LSTM test-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/.ipynb_checkpoints/AlphaNet LSTM test-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/12.30/LSTM test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.30/LSTM test.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/12.30/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.30/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

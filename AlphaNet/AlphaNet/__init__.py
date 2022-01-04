@@ -1,4 +1,4 @@
-__all__ = ["Models", "Model_Loader"]
+__all__ = ["Models"]
 
 import numpy as np
 import pandas as pd
@@ -13,7 +13,6 @@ from tqdm import tqdm
 import time
 import multiprocessing as mp
 
-
 class Model_Loader(object):
     def __init__(self, model, optimizer, device=None):
         if device == None:
@@ -26,8 +25,7 @@ class Model_Loader(object):
         self.loss_list = []
         self.min_loss = float("inf")
 
-
-    def fit(self, dataloader, loss_function, epoch_num, save_path=None):
+    def fit_transform(self, dataloader, loss_function, epoch_num, save_path=None):
         print("Learning Rate is :", self.optimizer.state_dict()['param_groups'][0]["lr"])
         loss_function = loss_function.to(self.device)
 
@@ -61,7 +59,7 @@ class Model_Loader(object):
             plt.savefig(save_path + "loss.png")
         return self.model
 
-    def transform(self, dataloader):
+    def pred(self, dataloader):
         pred_list = []
         label_list = []
         for _, (data, label) in enumerate(dataloader):
@@ -72,3 +70,4 @@ class Model_Loader(object):
         self.testy_pred = pd.DataFrame(pred_list)
         self.testy = pd.DataFrame(label_list)
         return self.testy_pred
+
