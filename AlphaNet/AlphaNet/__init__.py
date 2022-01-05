@@ -13,21 +13,28 @@ from tqdm import tqdm
 import time
 import multiprocessing as mp
 
+
 class Model_Loader(object):
-    def __init__(self, model, optimizer, device=None):
+    def __init__(self, model, device=None):
         if device == None:
             raise ValueError(
                 r"please indicate device by running device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')")
         self.device = device
         self.model = model.to(self.device)
         self.best_model = model.to(self.device)
-        self.optimizer = optimizer
+        self.optimizer = None
         self.loss_list = []
         self.min_loss = float("inf")
+        self.dataloader = None
+        self.loss_function = None
+        self.save_path = None
 
-    def fit_transform(self, dataloader, loss_function, epoch_num, save_path=None):
+    def fit_transform(self, dataloader, optimizer, loss_function, epoch_num, save_path=None):
+        self.dataloader = dataloader
+        self.loss_function = loss_function.to(self.device)
+        self.save_path = save_path
+        self.optimizer = optimizer
         print("Learning Rate is :", self.optimizer.state_dict()['param_groups'][0]["lr"])
-        loss_function = loss_function.to(self.device)
 
         for epoch in tqdm(range(epoch_num)):
             total_loss = 0
@@ -39,7 +46,7 @@ class Model_Loader(object):
                 # forward + backward +update
                 pred = self.model(inputs)
                 pred = pred.to(self.device)
-                loss = loss_function(pred, outputs)
+                loss = self.loss_function(pred, outputs)
                 loss.backward()
                 self.optimizer.step()
 
@@ -59,6 +66,11 @@ class Model_Loader(object):
             plt.savefig(save_path + "loss.png")
         return self.model
 
+    def transform(self, optimizer, epoch_num, method=None):
+        if method == "best":
+            self.model = self.best_model
+        return self.fit_transform(self.dataloader, optimizer, self.loss_function, epoch_num, self.save_path)
+
     def pred(self, dataloader):
         pred_list = []
         label_list = []
@@ -70,4 +82,3 @@ class Model_Loader(object):
         self.testy_pred = pd.DataFrame(pred_list)
         self.testy = pd.DataFrame(label_list)
         return self.testy_pred
-
