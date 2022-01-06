@@ -1,4 +1,5 @@
-__all__ = ["Models"]
+__all__ = ["Models","Data"]
+
 
 import numpy as np
 import pandas as pd
@@ -12,6 +13,11 @@ from progressbar import ProgressBar
 from tqdm import tqdm
 import time
 import multiprocessing as mp
+from Research.feature.ft import FeatureAnalysis
+import Research.utils.namespace as namespace
+config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
+print('Loading the configuration from ' + config_path)
+configs = namespace.load_namespace(config_path)
 
 
 class Model_Loader(object):
