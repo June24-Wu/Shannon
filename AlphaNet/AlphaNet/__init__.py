@@ -1,4 +1,4 @@
-__all__ = ["Models","Data"]
+__all__ = ["Models", "DataProcessing"]
 
 
 import numpy as np
@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
-import torch.utils.data as Data
 import torch.optim as optim
 from torch.autograd import Variable
 from progressbar import ProgressBar

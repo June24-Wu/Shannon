@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing/Norm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AlphaNet/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/Data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/Data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.5/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.5/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.6/.ipynb_checkpoints/Norm-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.6/.ipynb_checkpoints/Norm-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.6/Norm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.6/Norm.ipynb" afterDir="false" />
     </list>
@@ -36,6 +40,11 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.test (1)">
     <configuration name="Original Data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -201,5 +210,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
