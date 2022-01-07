@@ -1,7 +1,16 @@
 import datetime
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import torch
+import DataAPI
+import os
+import Research.utils.namespace as namespace
+config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
+print('Loading the configuration from ' + config_path)
+configs = namespace.load_namespace(config_path)
 
-
-def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, output_path: str):
+def convert_to_standard_daily_data_par(df: pd.DataFrame, output_name: str, output_path: str):
     grouped = df.groupby('timestamp')
     for date, group in grouped:
         date_format = pd.to_datetime(date).date()
@@ -12,6 +21,21 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
             os.makedirs(folder)
         file = os.path.join(folder, file_name)
         group.to_parquet(file)
+    return None
+
+
+def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, output_path: str):
+    grouped = df.groupby('timestamp')
+    for date, group in grouped:
+        date_format = pd.to_datetime(date).date()
+        assert DataAPI.is_trading_day(date), f"{date} is not a trading date!"
+        file_name = datetime.date.strftime(date_format, '%Y%m%d') + '.csv'
+        folder = os.path.join(output_path, output_name, str(date_format.year))
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        file = os.path.join(folder, file_name)
+        group.to_csv(file, sep=',', mode='w', header=False, index=False, encoding='utf-8')
+    return None
 
 
 class DataLoader(object):
@@ -21,7 +45,7 @@ class DataLoader(object):
         self.length = None
         self.y = None
 
-    def load_data_from_file(data_path, end_date, start_date="2015-01-01"):
+    def load_data_from_file(self,data_path, end_date, start_date="2015-01-01"):
         time_list = DataAPI.get_trading_days(start_date, end_date)
         final = []
         for date in time_list:
@@ -33,7 +57,7 @@ class DataLoader(object):
         self.length = self.feature_data.shape[0]
         return self.feature_data
 
-    def to_torch_DataLoader(sequence, shuffle, batch_size=1024, num_workers=16):
+    def to_torch_DataLoader(self,sequence, shuffle, batch_size=1024, num_workers=16):
         self.target = pd.DataFrame(self.feature_data["target"])
         self.feature_data.drop("target", axis=1, inplace=True)
         self.feture_data.set_index(["timestamp", "ticker"], inplace=True)
