@@ -89,7 +89,10 @@ class DataLoader(object):
         self.feature_data = None
         self.target = None
         self.length = None
+        self.feature_length = None
+        self.sequence = None
         self.y = None
+        self.shape = None
 
     def load_data_from_file(self,alpha_name, end_date,data_path = "/home/wuwenjun/Data_lib/ti0/wuwenjun/", start_date="2015-01-01"):
         time_list = DataAPI.get_trading_days(start_date, end_date)
@@ -105,18 +108,21 @@ class DataLoader(object):
 
     def to_torch_DataLoader(self,sequence, shuffle, batch_size=1024, num_workers=16):
         self.target = pd.DataFrame(self.feature_data["target"])
-        self.feature_data.drop("target", axis=1, inplace=True)
-        self.feture_data.set_index(["timestamp", "ticker"], inplace=True)
-        x = torch.from_numpy(np.array(self.feture_data).reshape(self.length, -1, sequence))
+        loader = self.feature_data.drop("target", axis=1)
+        self.feature_length = loader.shape[1] / sequence
+        self.sequence = sequence
+        # self.feture_data.set_index(["timestamp", "ticker"], inplace=True)
+        x = torch.from_numpy(np.array(loader).reshape(self.length, sequence,-1 ))
+        self.shape = x.shape
         y = torch.from_numpy(np.array(self.target).reshape(-1, 1))
-        self.feature_data = torch.utils.data.TensorDataset(x, y)
-        self.feature_data = torch.utils.data.DataLoader(
-            dataset=self.feature_data,
+        loader = torch.utils.data.TensorDataset(x, y)
+        loader = torch.utils.data.DataLoader(
+            dataset=loader,
             batch_size=batch_size,
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True
         )
-        return self.feature_data
+        return loader
 
 

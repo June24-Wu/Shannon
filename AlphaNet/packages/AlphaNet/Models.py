@@ -16,6 +16,7 @@ class AlphaNet_LSTM_V1(nn.Module):
         self.out = nn.Linear(self.fc2_neuron, 1)
 
     def forward(self, x):
+        x = torch.transpose(x, 1, 2)
         x = self.batch(x)
         x = torch.transpose(x, 1, 2)
         _, (hn, cn) = self.lstm(x)  # hn.shape: torch.Size([4, 512, 30])
