@@ -3,15 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/Data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing/Norm.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/Models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/AlphaNet/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Normalize.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Normalize.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Return_Generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Return_Generation.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/1.10/.ipynb_checkpoints/Return-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.10/.ipynb_checkpoints/Return-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/1.10/Return.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.10/Return.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/.ipynb_checkpoints/Shift_into_Squence_Par-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/.ipynb_checkpoints/Shift_into_Squence_Par-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Shift_into_Squence_Par.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Shift_into_Squence_Par.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/.ipynb_checkpoints/Get_Original_AlphaNet_Data_LSTM-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/.ipynb_checkpoints/Get_Original_AlphaNet_Data_LSTM-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/AlphaNet LSTM test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/Get_Original_AlphaNet_Data_LSTM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/Get_Original_AlphaNet_Data_LSTM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.10/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.10/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
