@@ -1,11 +1,11 @@
 import datetime
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import torch
 import DataAPI
 import os
 import Research.utils.namespace as namespace
+from Research.feature.ft import FeatureAnalysis
 config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
 print('Loading the configuration from ' + config_path)
 configs = namespace.load_namespace(config_path)
@@ -38,8 +38,23 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
     return None
 
 
+def generate_original_data(alpha_name, alpha_list, target, start_date, end_date):
+    config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
+    print('Loading the configuration from ' + config_path)
+    configs = namespace.load_namespace(config_path)
+    FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
+    dataloader = DataLoader(None)
+    dataloader.load_data_from_file(data_path="/home/wuwenjun/feature_platform/ti0/wuwenjun/%s/" % (target),
+                                   start_date=start_date, end_date=end_date)
+    dataloader.feature_data.rename(columns={target: "target"}, inplace=True)
+    FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable', timedelta=None)
+    output = pd.concat([FT.feature_data, dataloader.feature_data], axis=1)
+    convert_to_standard_daily_data_par(df=output, output_name=alpha_name, output_path="/home/wuwenjun/Data_lib/ti0/wuwenjun/")
+    return output
+
+
 class DataLoader(object):
-    def __init__(self, model, device=None):
+    def __init__(self):
         self.feature_data = None
         self.target = None
         self.length = None
