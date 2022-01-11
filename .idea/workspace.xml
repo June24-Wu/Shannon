@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/1.10/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.10/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/Get_Original_AlphaNet_Data_LSTM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/AlphaNet_LSTM/Get_Original_AlphaNet_Data_LSTM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.11/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.11/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

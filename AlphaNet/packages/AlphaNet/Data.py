@@ -26,6 +26,8 @@ def convert_to_standard_daily_data_par(df: pd.DataFrame, output_name: str, outpu
 
 
 def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, output_path: str):
+    if len(list(df.index.names)) != 2:
+        raise ValueError(r'Please set_index(["timestamp","ticker"]')
     grouped = df.groupby('timestamp')
     for date, group in grouped:
         date_format = pd.to_datetime(date).date()
