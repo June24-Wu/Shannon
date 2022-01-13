@@ -13,7 +13,7 @@ configs = namespace.load_namespace(config_path)
 
 def convert_to_standard_daily_data_par(df: pd.DataFrame, output_name: str, output_path: str):
     grouped = df.groupby('timestamp')
-    for date, group in grouped:
+    for date, group in tqdm(grouped):
         date_format = pd.to_datetime(date).date()
         assert DataAPI.is_trading_day(date), f"{date} is not a trading date!"
         file_name = datetime.date.strftime(date_format, '%Y%m%d') + '.par'
@@ -29,7 +29,7 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
     if len(list(df.index.names)) != 2:
         raise ValueError(r'Please set_index(["timestamp","ticker"]')
     grouped = df.groupby('timestamp')
-    for date, group in grouped:
+    for date, group in tqdm(grouped):
         date_format = pd.to_datetime(date).date()
         assert DataAPI.is_trading_day(date), f"{date} is not a trading date!"
         file_name = datetime.date.strftime(date_format, '%Y%m%d') + '.csv'
@@ -41,23 +41,18 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
     return None
 
 
-def generate_original_data(alpha_name, alpha_list, target, start_date, end_date):
+def concat_original_data(alpha_name, alpha_list, start_date, end_date,
+                         output_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
     print('Loading the configuration from ' + config_path)
     configs = namespace.load_namespace(config_path)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
-    dataloader = DataLoader(None)
-    dataloader.load_data_from_file(alpha_name = target,
-                                    data_path="/home/wuwenjun/feature_platform/ti0/wuwenjun/",
-                                    start_date=start_date, end_date=end_date)
-    dataloader.feature_data.rename(columns={target: "target"}, inplace=True)
     FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable', timedelta=None)
-    output = pd.concat([FT.feature_data, dataloader.feature_data], axis=1)
-    convert_to_standard_daily_data_par(df=output, output_name=alpha_name, output_path="/home/wuwenjun/Data_lib/ti0/wuwenjun/")
-    return output
+    convert_to_standard_daily_data_par(df=FT.feature_data, output_name=alpha_name, output_path=output_path)
+    return FT.feature_data
 
 
-def generate_shift_data(alpha_name, shift, data_path="/home/wuwenjun/Data_lib/ti0/wuwenjun/"):
+def generate_shift_data(alpha_name, shift, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
 
@@ -67,10 +62,34 @@ def generate_shift_data(alpha_name, shift, data_path="/home/wuwenjun/Data_lib/ti
         sequence_list.append(i)
     sequence_list.sort(reverse=True)
 
+    def generate_alpha_list(feat_list, method, day):
+        name_list = []
+        # Moving Cov
+        if "COV" in method:
+            for i in range(len(feat_list) - 1):
+                for j in range(i + 1, len(feat_list)):
+                    name_list.append("COV_%s_%s_%s" % (feat_list[i], feat_list[j], day))
+        if "CORR" in method:
+            for i in range(len(feat_list) - 1):
+                for j in range(i + 1, len(feat_list)):
+                    name_list.append("CORR_%s_%s_%s" % (feat_list[i], feat_list[j], day))
+        if "STD" in method:
+            for i in range(len(feat_list) - 1):
+                name_list.append("STD_%s_%s" % (feat_list[i], day))
+        if "ZSCORE" in method:
+            for i in range(len(feat_list) - 1):
+                name_list.append("ZSCORE_%s_%s" % (feat_list[i], day))
+        if "RETURN" in method:
+            for i in range(len(feat_list) - 1):
+                name_list.append("RETURN_%s_%s" % (feat_list[i], day))
+        if "DECAY" in method:
+            for i in range(len(feat_list) - 1):
+                name_list.append("DECAY_%s_%s" % (feat_list[i], day))
+        return name_list
+
     # shift
-    x = dataloader.feature_data.drop("target", axis=1)
     final_df = []
-    for index, group in tqdm(x.groupby("ticker")):
+    for index, group in tqdm(dataloader.feature_data.groupby("ticker")):
         group_df = []
         for i in sequence_list:
             a = group.shift(i)
@@ -79,10 +98,16 @@ def generate_shift_data(alpha_name, shift, data_path="/home/wuwenjun/Data_lib/ti
         group_df = pd.concat(group_df, axis=1)
         final_df.append(group_df)
     final_df = pd.concat(final_df, axis=0)
-    final_df = pd.concat([final_df, dataloader.feature_data["target"]], axis=1)
-    final_df.dropna(axis=0,inplace=True)
+
+    # target
+    configs = namespace.load_namespace(r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template')
+    FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
+    FT.load_feature_from_file(target, "2015-01-01", "2022-01-01", universe='Investable', timedelta=None)
+
+    final_df = pd.concat([final_df, FT.feature_data], axis=1)
+    final_df.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i" % shift,
-                                       output_path="/home/wuwenjun/Data_lib/ti0/wuwenjun/")
+                                       output_path=data_path)
     return final_df
 
 
