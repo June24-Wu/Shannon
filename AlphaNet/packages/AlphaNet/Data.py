@@ -7,9 +7,6 @@ import os
 import Research.utils.namespace as namespace
 from tqdm import tqdm
 from Research.feature.ft import FeatureAnalysis
-config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
-print('Loading the configuration from ' + config_path)
-configs = namespace.load_namespace(config_path)
 
 def convert_to_standard_daily_data_par(df: pd.DataFrame, output_name: str, output_path: str):
     grouped = df.groupby('timestamp')
@@ -136,11 +133,11 @@ class DataLoader(object):
     def to_torch_DataLoader(self,sequence, shuffle, batch_size=1024, num_workers=16):
         self.target = pd.DataFrame(self.feature_data["target"])
         loader = self.feature_data.drop("target", axis=1)
-        self.feature_length = loader.shape[1] / sequence
         self.sequence = sequence
         # self.feture_data.set_index(["timestamp", "ticker"], inplace=True)
         x = torch.from_numpy(np.array(loader).reshape(self.length, sequence,-1 ))
         self.shape = x.shape
+        self.feature_length = x.shape[2]
         y = torch.from_numpy(np.array(self.target).reshape(-1, 1))
         loader = torch.utils.data.TensorDataset(x, y)
         loader = torch.utils.data.DataLoader(
