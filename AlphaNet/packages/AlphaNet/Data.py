@@ -104,7 +104,7 @@ def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/Sha
 
     final_df = pd.concat([final_df, FT.feature_data], axis=1)
     final_df.dropna(axis=0, inplace=True)
-    convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i" % shift,
+    convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i_Sequence_%i" % (shift,sequence),
                                        output_path=data_path)
     return final_df
 
