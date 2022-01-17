@@ -48,42 +48,43 @@ def concat_original_data(alpha_name, alpha_list, start_date, end_date,
     convert_to_standard_daily_data_par(df=FT.feature_data, output_name=alpha_name, output_path=output_path)
     return FT.feature_data
 
+def generate_alpha_list(feat_list, method, day):
+    name_list = []
+    # Moving Cov
+    if "COV" in method:
+        for i in range(len(feat_list) - 1):
+            for j in range(i + 1, len(feat_list)):
+                name_list.append("COV_%s_%s_%s" % (feat_list[i], feat_list[j], day))
+    if "CORR" in method:
+        for i in range(len(feat_list) - 1):
+            for j in range(i + 1, len(feat_list)):
+                name_list.append("CORR_%s_%s_%s" % (feat_list[i], feat_list[j], day))
+    if "STD" in method:
+        for i in range(len(feat_list) - 1):
+            name_list.append("STD_%s_%s" % (feat_list[i], day))
+    if "ZSCORE" in method:
+        for i in range(len(feat_list) - 1):
+            name_list.append("ZSCORE_%s_%s" % (feat_list[i], day))
+    if "RETURN" in method:
+        for i in range(len(feat_list) - 1):
+            name_list.append("RETURN_%s_%s" % (feat_list[i], day))
+    if "DECAY" in method:
+        for i in range(len(feat_list) - 1):
+            name_list.append("DECAY_%s_%s" % (feat_list[i], day))
+    return name_list
 
-def generate_shift_data(alpha_name, shift, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
+def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
 
     # generate shift list
     sequence_list = [0]
-    for i in range(shift - 1, 30, shift):
-        sequence_list.append(i)
+    shift_value = shift - 1
+    while len(sequence_list) < sequence:
+        sequence_list.append(shift_value)
+        shift_value += shift
     sequence_list.sort(reverse=True)
-
-    def generate_alpha_list(feat_list, method, day):
-        name_list = []
-        # Moving Cov
-        if "COV" in method:
-            for i in range(len(feat_list) - 1):
-                for j in range(i + 1, len(feat_list)):
-                    name_list.append("COV_%s_%s_%s" % (feat_list[i], feat_list[j], day))
-        if "CORR" in method:
-            for i in range(len(feat_list) - 1):
-                for j in range(i + 1, len(feat_list)):
-                    name_list.append("CORR_%s_%s_%s" % (feat_list[i], feat_list[j], day))
-        if "STD" in method:
-            for i in range(len(feat_list) - 1):
-                name_list.append("STD_%s_%s" % (feat_list[i], day))
-        if "ZSCORE" in method:
-            for i in range(len(feat_list) - 1):
-                name_list.append("ZSCORE_%s_%s" % (feat_list[i], day))
-        if "RETURN" in method:
-            for i in range(len(feat_list) - 1):
-                name_list.append("RETURN_%s_%s" % (feat_list[i], day))
-        if "DECAY" in method:
-            for i in range(len(feat_list) - 1):
-                name_list.append("DECAY_%s_%s" % (feat_list[i], day))
-        return name_list
-
+    print(sequence_list)
     # shift
     final_df = []
     for index, group in tqdm(dataloader.feature_data.groupby("ticker")):
