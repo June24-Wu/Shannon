@@ -43,7 +43,7 @@ class Model_Loader(object):
 
         for epoch in tqdm(range(epoch_num)):
             total_loss = 0
-            for _, (inputs, outputs) in tqdm(enumerate(dataloader)):
+            for _, (inputs, outputs) in enumerate(dataloader):
                 inputs = Variable(inputs).float().to(self.device)
                 outputs = Variable(outputs).float().to(self.device)
                 self.optimizer.zero_grad()  # noticed:  the grad return to zero before starting the loop
