@@ -1,3 +1,2 @@
-from AlphaNet import *
-
+import pandas as pd
 
