@@ -38,8 +38,8 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
     return None
 
 
-def concat_original_data(alpha_name, alpha_list, start_date, end_date,
-                         output_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
+def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_date = "2021-06-01",
+                         output_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"):
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
     print('Loading the configuration from ' + config_path)
     configs = namespace.load_namespace(config_path)
@@ -73,13 +73,13 @@ def generate_alpha_list(feat_list, method, day):
             name_list.append("DECAY_%s_%s" % (feat_list[i], day))
     return name_list
 
-def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/"):
+def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
 
     # generate shift list
     sequence_list = [0]
-    shift_value = shift - 1
+    shift_value = shift
     while len(sequence_list) < sequence:
         sequence_list.append(shift_value)
         shift_value += shift
@@ -103,6 +103,7 @@ def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/Sha
     FT.load_feature_from_file(target, "2015-01-01", "2022-01-01", universe='Investable', timedelta=None)
 
     final_df = pd.concat([final_df, FT.feature_data], axis=1)
+    final_df.rename(columns={target:"target"},inplace=True)
     final_df.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i_Sequence_%i" % (shift,sequence),
                                        output_path=data_path)

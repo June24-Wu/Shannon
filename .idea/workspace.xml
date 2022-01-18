@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/AlphaNet/Automatic Training/AlphaNet_LSTM_V1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Generate_Data_Par.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Generate_Data_Par.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/12.23/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/12.23/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.17/.ipynb_checkpoints/Auto-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/.ipynb_checkpoints/Auto-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.17/Auto.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/Auto.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.17/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +46,28 @@
       <recent name="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test (1)">
+  <component name="RunManager" selected="Python.AlphaNet_LSTM_V1">
+    <configuration name="AlphaNet_LSTM_V1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Shannon" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/python3/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/AlphaNet/Automatic Training/AlphaNet_LSTM_V1.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Original Data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Shannon" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -174,9 +200,11 @@
       <item itemvalue="Python.__init__" />
       <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.AlphaNet_LSTM_V1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.AlphaNet_LSTM_V1" />
         <item itemvalue="Python.test (1)" />
         <item itemvalue="Python.__init__" />
         <item itemvalue="Python.test" />
