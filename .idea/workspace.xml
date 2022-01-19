@@ -2,15 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/AlphaNet/Automatic Training/AlphaNet_LSTM_V1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Generate_Data_Par.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Generate_Data_Par.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Automatic Training/AlphaNet_LSTM_V1.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Loopback.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.17/.ipynb_checkpoints/Auto-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/.ipynb_checkpoints/Auto-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.17/Auto.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/Auto.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.17/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.17/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.18/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.18/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.18/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.18/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

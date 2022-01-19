@@ -19,9 +19,12 @@ from tqdm import tqdm
 import multiprocessing as mp
 import sys
 sys.path.append("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/packages/")
-import AlphaNet.packages.AlphaNet as AlphaNet
-from AlphaNet.packages.AlphaNet.Data import DataLoader
-from AlphaNet.packages.AlphaNet.Models import AlphaNet_LSTM_V1
+import AlphaNet
+from AlphaNet.Data import DataLoader
+from AlphaNet.Models import AlphaNet_LSTM_V1
+# import AlphaNet.packages.AlphaNet as AlphaNet
+# from AlphaNet.packages.AlphaNet.Data import DataLoader
+# from AlphaNet.packages.AlphaNet.Models import AlphaNet_LSTM_V1
 
 # read_task
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
@@ -35,7 +38,7 @@ sequence = task.loc[task_index,"sequence"]
 LR = task.loc[task_index,"LR"]
 epoch_num = task.loc[task_index,"epoch_num"]
 feature_num = task.loc[task_index,"feature_num"]
-task.loc[task_index,"status"] = "running"
+task.loc[task_index,"status"] = device
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 
 # file path
@@ -66,7 +69,7 @@ train_loader = trainloader.to_torch_DataLoader(sequence = sequence,shuffle=True)
 # Model Loader
 
 loss_function = nn.MSELoss()
-model = AlphaNet_LSTM_V1(feature_num, 64)
+model = AlphaNet_LSTM_V1(feature_num,sequence,64)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR[0])
 model_loader = AlphaNet.Model_Loader(model = model,device=device)
 print(model_loader.model)
