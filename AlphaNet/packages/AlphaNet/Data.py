@@ -43,8 +43,10 @@ def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
     print('Loading the configuration from ' + config_path)
     configs = namespace.load_namespace(config_path)
+    print(alpha_list)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
     FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable', timedelta=None)
+    FT.feature_data.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=FT.feature_data, output_name=alpha_name, output_path=output_path)
     return FT.feature_data
 
@@ -60,16 +62,16 @@ def generate_alpha_list(feat_list, method, day):
             for j in range(i + 1, len(feat_list)):
                 name_list.append("CORR_%s_%s_%s" % (feat_list[i], feat_list[j], day))
     if "STD" in method:
-        for i in range(len(feat_list) - 1):
+        for i in range(len(feat_list)):
             name_list.append("STD_%s_%s" % (feat_list[i], day))
     if "ZSCORE" in method:
-        for i in range(len(feat_list) - 1):
+        for i in range(len(feat_list)):
             name_list.append("ZSCORE_%s_%s" % (feat_list[i], day))
     if "RETURN" in method:
-        for i in range(len(feat_list) - 1):
+        for i in range(len(feat_list)):
             name_list.append("RETURN_%s_%s" % (feat_list[i], day))
     if "DECAY" in method:
-        for i in range(len(feat_list) - 1):
+        for i in range(len(feat_list)):
             name_list.append("DECAY_%s_%s" % (feat_list[i], day))
     return name_list
 

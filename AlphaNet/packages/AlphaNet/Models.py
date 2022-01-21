@@ -28,25 +28,33 @@ class AlphaNet_LSTM_V1(nn.Module):
         self.fc2_neuron = fully_connect_layer_neural  # 32
 
         # Layer
-        self.batch = torch.nn.BatchNorm1d(self.factor_num * self.sequence)
+        self.batch = torch.nn.BatchNorm1d(self.sequence * self.factor_num)
         self.lstm = nn.LSTM(self.factor_num, self.fc2_neuron, 3, batch_first=True, bidirectional=True,dropout = 0.2)
         self.lstm2 = nn.LSTM(int(self.fc2_neuron *2), int(self.fc2_neuron/2), 3, batch_first=True, bidirectional=True,dropout = 0.2)
-        self.batch2 = torch.nn.BatchNorm1d(self.fc2_neuron)
+        self.batch2 = torch.nn.BatchNorm1d(int(self.fc2_neuron *2))
+        self.batch3 = torch.nn.BatchNorm1d(self.fc2_neuron)
         self.dropout = nn.Dropout(0.2)
         self.relu = nn.ReLU()
         self.LeakyReLU = nn.LeakyReLU()
         self.out = nn.Linear(self.fc2_neuron, 1)
 
     def forward(self, x):
-        # x = x.reshape(x.shape[0],-1).float()
-        # x = self.batch(x)
-        # x = x.reshape(x.shape[0],self.sequence,self.factor_num)
-        r_out, _ = self.lstm(x)  # r_out.shape: torch.Size([6182, 10, 128])
-        r_out = self.LeakyReLU(r_out) # torch.Size([6182, 10, 128])
-        r_out, _ = self.lstm2(r_out) # torch.Size([6182, 10, 64])
-        r_out = r_out[:, -1] # torch.Size([6182, 64])
-        r_out = self.batch2(r_out)  # torch.Size([6182, 64])
-        r_out = self.relu(r_out)
-        r_out = self.dropout(r_out)
-        y_pred = self.out(r_out)
+        x = x.reshape(x.shape[0],-1).float()
+        x = self.batch(x)
+        x = x.reshape(x.shape[0],self.sequence,self.factor_num)
+
+        x, _ = self.lstm(x)  # x.shape: torch.Size([6182, 10, 128])
+        x = self.LeakyReLU(x)
+        x = torch.transpose(x,1,2) # x.shape: torch.Size([6182, 128, 10])
+        x = self.batch2(x)
+        x = torch.transpose(x,1,2)
+
+
+        x, _ = self.lstm2(x) # torch.Size([6182, 10, 64])
+
+        x = x[:, -1] # torch.Size([6182, 64])
+        x = self.batch3(x)  # torch.Size([6182, 64])
+        x = self.relu(x)
+        x = self.dropout(x)
+        y_pred = self.out(x)
         return y_pred
