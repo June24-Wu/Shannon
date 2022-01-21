@@ -46,6 +46,7 @@ def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_
     print(alpha_list)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
     FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable', timedelta=None)
+    FT.feature_data[FT.feature_data.columns] = FT.feature_data[FT.feature_data.columns].astype("float32")
     FT.feature_data.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=FT.feature_data, output_name=alpha_name, output_path=output_path)
     return FT.feature_data
@@ -78,7 +79,7 @@ def generate_alpha_list(feat_list, method, day):
 def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
-
+    # dataloader.feature_data[dataloader.feature_data.columns] = dataloader.feature_data[dataloader.feature_data.columns].astype("float32")
     # generate shift list
     sequence_list = [0]
     shift_value = shift
