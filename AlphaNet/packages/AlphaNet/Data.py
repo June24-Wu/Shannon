@@ -104,9 +104,9 @@ def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/Sha
     configs = namespace.load_namespace(r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template')
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
     FT.load_feature_from_file(target, "2015-01-01", "2022-01-01", universe='Investable', timedelta=None)
+    FT.feature_data.rename(columns={target: "target"}, inplace=True)
 
     final_df = pd.concat([final_df, FT.feature_data], axis=1)
-    final_df.rename(columns={target:"target"},inplace=True)
     final_df.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i_Sequence_%i_%s" % (shift,sequence,target),
                                        output_path=data_path)
