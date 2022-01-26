@@ -47,7 +47,7 @@ model_path = "/home/wuwenjun/Alpha_Factor/" + Alpha_Name + "/" + "%s_%s" %(start
 if os.path.exists(model_path) == False:
     os.makedirs(model_path)
     print(model_path)
-data_path = "/home/wuwenjun/Data"
+data_path = "/home/wuwenjun/Data/"
 
 # write task
 f = open(model_path + 'back_test.txt','w')

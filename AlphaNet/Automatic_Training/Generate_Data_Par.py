@@ -40,7 +40,7 @@ task_info["CPU"] = False
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 print(factor_info.loc[factor_index,:])
 
-output_path = "/home/wuwenjun/Data"
+output_path = "/home/wuwenjun/Data/"
 
 if alpha_name not in os.listdir(output_path):
     concat_original_data(alpha_name=alpha_name,alpha_list=alpha_list,output_path=output_path)
