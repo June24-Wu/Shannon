@@ -1,4 +1,5 @@
 import time
+import datetime
 import os
 from Research.backtest.bt import BTDaily
 import matplotlib.pyplot as plt
@@ -38,7 +39,7 @@ sequence = task.loc[task_index,"sequence"]
 LR = task.loc[task_index,"LR"]
 epoch_num = task.loc[task_index,"epoch_num"]
 feature_num = task.loc[task_index,"feature_num"]
-task.loc[task_index,"status"] = device
+task.loc[task_index,"status"] = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%m-%d_%H:%M_') + device
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 
 # file path
@@ -46,7 +47,7 @@ model_path = "/home/wuwenjun/Alpha_Factor/" + Alpha_Name + "/" + "%s_%s" %(start
 if os.path.exists(model_path) == False:
     os.makedirs(model_path)
     print(model_path)
-data_path = "/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"
+data_path = "/home/wuwenjun/Data"
 
 # write task
 f = open(model_path + 'back_test.txt','w')

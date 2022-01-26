@@ -1,4 +1,5 @@
 import time
+import datetime
 import os
 from Research.backtest.bt import BTDaily
 import matplotlib.pyplot as plt
@@ -34,13 +35,16 @@ target = factor_info.loc[factor_index,"target"]
 LR = factor_info.loc[factor_index,"LR"]
 epoch_num = factor_info.loc[factor_index,"epoch_num"]
 alpha_list = factor_info.loc[factor_index,"alpha_list"]
-factor_info.loc[factor_index,"status"] = "running"
+factor_info.loc[factor_index,"status"] = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%m-%d_%H:%M')
 task_info["CPU"] = False
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 print(factor_info.loc[factor_index,:])
-if alpha_name not in os.listdir("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib"):
-    concat_original_data(alpha_name=alpha_name,alpha_list=alpha_list)
-generate_shift_data(alpha_name=alpha_name,shift=shift,sequence=sequence,target=target)
+
+output_path = "/home/wuwenjun/Data"
+
+if alpha_name not in os.listdir(output_path):
+    concat_original_data(alpha_name=alpha_name,alpha_list=alpha_list,output_path=output_path)
+generate_shift_data(alpha_name=alpha_name,shift=shift,sequence=sequence,target=target,data_path=output_path)
 
 # Task Generation
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
