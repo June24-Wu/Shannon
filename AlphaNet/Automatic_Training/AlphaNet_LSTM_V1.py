@@ -70,7 +70,7 @@ train_loader = trainloader.to_torch_DataLoader(sequence = sequence,shuffle=True)
 # Model Loader
 
 loss_function = nn.MSELoss()
-model = AlphaNet_LSTM_V1(feature_num,sequence,64)
+model = AlphaNet_LSTM_V1(feature_num,sequence,64,attention = True)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR[0])
 model_loader = AlphaNet.Model_Loader(model = model,device=device)
 print(model_loader.model)

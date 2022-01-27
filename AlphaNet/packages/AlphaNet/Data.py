@@ -39,17 +39,38 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
 
 
 def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_date = "2021-06-01",
-                         output_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"):
+                         output_path="/home/wuwenjun/Data/", universe='Investable',correlation_filter = None):
+    if correlation_filter == None:
+        config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
+        configs = namespace.load_namespace(config_path)
+        print(alpha_list)
+        FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
+        feature_data = FT.load_feature_from_file(alpha_list, start_date, end_date, universe=universe, timedelta=None)[0]
+    else:
+        feature_data , alpha_list = __feature_filter(alpha_list,start_date,end_date,bench_mark=correlation_filter)
+    feature_data[feature_data.columns] = feature_data[feature_data.columns].astype("float32")
+    feature_data.dropna(axis=0, inplace=True)
+    convert_to_standard_daily_data_par(df=feature_data, output_name=alpha_name, output_path=output_path)
+    return feature_data , alpha_list
+
+def __feature_filter(alpha_list, start_date, end_date, bench_mark = 0.9):
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
-    print('Loading the configuration from ' + config_path)
     configs = namespace.load_namespace(config_path)
-    print(alpha_list)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
-    FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable', timedelta=None)
-    FT.feature_data[FT.feature_data.columns] = FT.feature_data[FT.feature_data.columns].astype("float32")
-    FT.feature_data.dropna(axis=0, inplace=True)
-    convert_to_standard_daily_data_par(df=FT.feature_data, output_name=alpha_name, output_path=output_path)
-    return FT.feature_data
+    FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable',
+                              timedelta=None)
+    final_alpha_list = []
+    for i in alpha_list:
+        if final_alpha_list == []:
+            final_alpha_list.append(i)
+            continue
+        corr_table = FT.get_correlation_within_features(i, start_time=start_date, end_time=end_date, others=final_alpha_list)
+        if corr_table["correlation"].max() <= abs(bench_mark * 100):
+            final_alpha_list.append(i)
+        else:
+            print("delete [%s] because of %d [%s]" % (i,corr_table["correlation"].max(),corr_table["correlation"].idxmax()))
+    FT.feature_data = FT.feature_data[final_alpha_list]
+    return FT.feature_data , final_alpha_list
 
 def generate_alpha_list(feat_list, method, day):
     name_list = []
@@ -76,10 +97,10 @@ def generate_alpha_list(feat_list, method, day):
             name_list.append("DECAY_%s_%s" % (feat_list[i], day))
     return name_list
 
-def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/ShareFolder/feature_platform/ti0/wuwenjun/#Data_lib/"):
+def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/wuwenjun/Data/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
-    # dataloader.feature_data[dataloader.feature_data.columns] = dataloader.feature_data[dataloader.feature_data.columns].astype("float32")
+
     # generate shift list
     sequence_list = [0]
     shift_value = shift
@@ -108,7 +129,8 @@ def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/Sha
 
     final_df = pd.concat([final_df, FT.feature_data], axis=1)
     final_df.dropna(axis=0, inplace=True)
-    convert_to_standard_daily_data_par(df=final_df, output_name=alpha_name + "_Shift_%i_Sequence_%i_%s" % (shift,sequence,target),
+    output_name = alpha_name + "_Shift_%i_Sequence_%i_%s" % (shift,sequence,target)
+    convert_to_standard_daily_data_par(df=final_df, output_name=output_name,
                                        output_path=data_path)
     return final_df
 
