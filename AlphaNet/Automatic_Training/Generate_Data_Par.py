@@ -36,7 +36,8 @@ LR = factor_info.loc[factor_index,"LR"]
 epoch_num = factor_info.loc[factor_index,"epoch_num"]
 alpha_list = factor_info.loc[factor_index,"alpha_list"]
 universe = factor_info.loc[factor_index,"universe"]
-factor_info.loc[factor_index,"status"] = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%m-%d_%H:%M')
+t1 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%H:%M')
+factor_info.loc[factor_index,"status"] = "Running: " +t1
 task_info["CPU"] = False
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 print(factor_info.loc[factor_index,:])
@@ -78,7 +79,8 @@ task.reset_index(drop=True,inplace=True)
 task.index.names = ["task_id"]
 task_info["Task"] = task
 factor_info = task_info["Factor"]
-factor_info.loc[factor_index,"status"] = "finished"
+t2 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('_%H:%M | %m-%d')
+factor_info.loc[factor_index,"status"] = "Finish: " +t1+t2
 task_info["CPU"] = True
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 np.save("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/Factor_Description/Task.npy",task_info)

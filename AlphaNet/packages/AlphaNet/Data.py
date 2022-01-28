@@ -39,38 +39,38 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
 
 
 def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_date = "2021-06-01",
-                         output_path="/home/wuwenjun/Data/", universe='Investable',correlation_filter = None):
-    if correlation_filter == None:
+                         output_path="/home/wuwenjun/Data/", universe='Investable',corr_filter = None,base_list = []):
+    if corr_filter == None:
         config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
         configs = namespace.load_namespace(config_path)
         print(alpha_list)
         FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
         feature_data = FT.load_feature_from_file(alpha_list, start_date, end_date, universe=universe, timedelta=None)[0]
     else:
-        feature_data , alpha_list = __feature_filter(alpha_list,start_date,end_date,bench_mark=correlation_filter)
+        feature_data , alpha_list = __feature_filter(alpha_list,start_date,end_date,bench_mark=corr_filter,base_list=base_list)
     feature_data[feature_data.columns] = feature_data[feature_data.columns].astype("float32")
     feature_data.dropna(axis=0, inplace=True)
     convert_to_standard_daily_data_par(df=feature_data, output_name=alpha_name, output_path=output_path)
     return feature_data , alpha_list
 
-def __feature_filter(alpha_list, start_date, end_date, bench_mark = 0.9):
+def __feature_filter(alpha_list, start_date, end_date, bench_mark = 0.9,base_list = []):
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
     configs = namespace.load_namespace(config_path)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
     FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable',
                               timedelta=None)
-    final_alpha_list = []
     for i in alpha_list:
-        if final_alpha_list == []:
-            final_alpha_list.append(i)
+        if base_list == []:
+            base_list.append(i)
             continue
-        corr_table = FT.get_correlation_within_features(i, start_time=start_date, end_time=end_date, others=final_alpha_list)
+        corr_table = FT.get_correlation_within_features(i, start_time=start_date, end_time=end_date, others=base_list)
         if corr_table["correlation"].max() <= abs(bench_mark * 100):
-            final_alpha_list.append(i)
+            print("add [%s]" % i)
+            base_list.append(i)
         else:
             print("delete [%s] because of %d [%s]" % (i,corr_table["correlation"].max(),corr_table["correlation"].idxmax()))
-    FT.feature_data = FT.feature_data[final_alpha_list]
-    return FT.feature_data , final_alpha_list
+    FT.feature_data = FT.feature_data[base_list]
+    return FT.feature_data , base_list
 
 def generate_alpha_list(feat_list, method, day):
     name_list = []
@@ -95,6 +95,9 @@ def generate_alpha_list(feat_list, method, day):
     if "DECAY" in method:
         for i in range(len(feat_list)):
             name_list.append("DECAY_%s_%s" % (feat_list[i], day))
+    if "Mavg" in method:
+        for i in range(len(feat_list)):
+            name_list.append("Mavg_%s_%s" % (feat_list[i], day))
     return name_list
 
 def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/wuwenjun/Data/"):

@@ -39,7 +39,8 @@ sequence = task.loc[task_index,"sequence"]
 LR = task.loc[task_index,"LR"]
 epoch_num = task.loc[task_index,"epoch_num"]
 feature_num = task.loc[task_index,"feature_num"]
-task.loc[task_index,"status"] = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%m-%d_%H:%M_') + device
+t1 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%H:%M')
+task.loc[task_index,"status"] = device + " : "+ t1 
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 
 # file path
@@ -123,6 +124,7 @@ f.close()
 # task
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
 task = task_info["Task"]
-task.loc[task_index,"status"] = "finished"
+t2 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%H:%M | %m-%d')
+task.loc[task_index,"status"] = "Finish: " + t1 + "_"+ t2
 task_info["Cuda"].append(device)
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
