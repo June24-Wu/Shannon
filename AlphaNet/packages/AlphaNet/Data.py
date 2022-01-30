@@ -39,8 +39,8 @@ def convert_to_standard_daily_data_csv(df: pd.DataFrame, output_name: str, outpu
 
 
 def concat_original_data(alpha_name, alpha_list, start_date = "2016-01-01", end_date = "2021-06-01",
-                         output_path="/home/wuwenjun/Data/", universe='Investable',corr_filter = None,base_list = []):
-    if corr_filter == None:
+                         output_path="/home/wuwenjun/Data/", universe='Investable',corr_filter = False,base_list = []):
+    if corr_filter == False:
         config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
         configs = namespace.load_namespace(config_path)
         print(alpha_list)
@@ -57,7 +57,7 @@ def __feature_filter(alpha_list, start_date, end_date, bench_mark = 0.9,base_lis
     config_path = r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template'
     configs = namespace.load_namespace(config_path)
     FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
-    FT.load_feature_from_file(alpha_list, start_date, end_date, universe='Investable',
+    FT.load_feature_from_file(alpha_list+base_list, start_date, end_date, universe='Investable',
                               timedelta=None)
     for i in alpha_list:
         if base_list == []:
