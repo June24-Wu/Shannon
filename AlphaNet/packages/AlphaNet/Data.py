@@ -75,14 +75,14 @@ def __feature_filter(alpha_list, start_date, end_date, bench_mark = 0.9,base_lis
 def generate_alpha_list(feat_list, method, day):
     name_list = []
     # Moving Cov
-    if "COV" in method:
-        for i in range(len(feat_list) - 1):
-            for j in range(i + 1, len(feat_list)):
-                name_list.append("COV_%s_%s_%s" % (feat_list[i], feat_list[j], day))
     if "CORR" in method:
         for i in range(len(feat_list) - 1):
             for j in range(i + 1, len(feat_list)):
                 name_list.append("CORR_%s_%s_%s" % (feat_list[i], feat_list[j], day))
+    if "COV" in method:
+        for i in range(len(feat_list) - 1):
+            for j in range(i + 1, len(feat_list)):
+                name_list.append("COV_%s_%s_%s" % (feat_list[i], feat_list[j], day))
     if "STD" in method:
         for i in range(len(feat_list)):
             name_list.append("STD_%s_%s" % (feat_list[i], day))
@@ -100,7 +100,7 @@ def generate_alpha_list(feat_list, method, day):
             name_list.append("Mavg_%s_%s" % (feat_list[i], day))
     return name_list
 
-def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/wuwenjun/Data/"):
+def generate_shift_data(alpha_name, shift,sequence, target = None, data_path="/home/wuwenjun/Data/"):
     dataloader = DataLoader()
     dataloader.load_data_from_file(alpha_name=alpha_name, data_path=data_path, end_date="2022-01-01")
 
@@ -124,15 +124,19 @@ def generate_shift_data(alpha_name, shift,sequence, target, data_path="/home/wuw
         final_df.append(group_df)
     final_df = pd.concat(final_df, axis=0)
 
-    # target
-    configs = namespace.load_namespace(r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template')
-    FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
-    FT.load_feature_from_file(target, "2015-01-01", "2022-01-01", universe='Investable', timedelta=None)
-    FT.feature_data.rename(columns={target: "target"}, inplace=True)
+    if target != None:
+        # target
+        configs = namespace.load_namespace(r'/home/ShareFolder/lgc/Modules/Research/config/feature_bt_template')
+        FT = FeatureAnalysis(configs, feature_path=r"/home/ShareFolder/feature_platform")
+        FT.load_feature_from_file(target, "2015-01-01", "2022-01-01", universe='Investable', timedelta=None)
+        FT.feature_data.rename(columns={target: "target"}, inplace=True)
 
-    final_df = pd.concat([final_df, FT.feature_data], axis=1)
+        final_df = pd.concat([final_df, FT.feature_data], axis=1)
+        output_name = alpha_name + "_Shift_%i_Sequence_%i_%s" % (shift, sequence, target)
+    else:
+        output_name = alpha_name + "_Shift_%i_Sequence_%i" % (shift,sequence)
+
     final_df.dropna(axis=0, inplace=True)
-    output_name = alpha_name + "_Shift_%i_Sequence_%i_%s" % (shift,sequence,target)
     convert_to_standard_daily_data_par(df=final_df, output_name=output_name,
                                        output_path=data_path)
     return final_df
@@ -148,7 +152,7 @@ class DataLoader(object):
         self.y = None
         self.shape = None
 
-    def load_data_from_file(self,alpha_name, end_date,data_path = "/home/wuwenjun/Data_lib/ti0/wuwenjun/", start_date="2015-01-01"):
+    def load_data_from_file(self,alpha_name, end_date,data_path = "/home/wuwenjun/Data/", start_date="2015-01-01"):
         time_list = DataAPI.get_trading_days(start_date, end_date)
         final = []
         for date in tqdm(time_list):
@@ -160,14 +164,13 @@ class DataLoader(object):
         self.length = self.feature_data.shape[0]
         return self.feature_data
 
-    def to_torch_DataLoader(self,sequence, shuffle, batch_size=1024, num_workers=16):
+    def to_torch_DataLoader(self,shape:list, shuffle, batch_size=1024, num_workers=16):
         self.target = pd.DataFrame(self.feature_data["target"])
         loader = self.feature_data.drop("target", axis=1)
-        self.sequence = sequence
-        # self.feture_data.set_index(["timestamp", "ticker"], inplace=True)
-        x = torch.from_numpy(np.array(loader).reshape(self.length, sequence,-1 ))
-        self.shape = x.shape
-        self.feature_length = x.shape[2]
+        shape.insert(0,self.length)
+        self.shape = shape
+        x = torch.from_numpy(np.array(loader).reshape(self.shape))
+        self.feature_length = x.shape[-1]
         y = torch.from_numpy(np.array(self.target).reshape(-1, 1))
         loader = torch.utils.data.TensorDataset(x, y)
         loader = torch.utils.data.DataLoader(

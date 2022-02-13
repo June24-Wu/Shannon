@@ -2,12 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/Res_LSTM.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Task Monitoring.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Task Monitoring.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Factor_Description/base_list.npy" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Factor_Description/base_list.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Factor_Description/feature_list.npy" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Factor_Description/feature_list.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/packages/AlphaNet/Models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/.ipynb_checkpoints/Alpha_Generation-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/.ipynb_checkpoints/Alpha_Generation-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/.ipynb_checkpoints/Task Generation-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/.ipynb_checkpoints/Task Generation-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Alpha_Generation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Task Generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Task Generation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NoteBook/Task_Generation deprecating.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/NoteBook/Task_Generation deprecating.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.30/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.30/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/1.30/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.30/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/untitled.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

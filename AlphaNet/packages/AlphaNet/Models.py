@@ -22,13 +22,12 @@ class AlphaNet_V1(nn.Module):
 
 
 class AlphaNet_LSTM_V1(nn.Module):
-    def __init__(self, factor_num, sequence, fully_connect_layer_neural, attention=False, transformer=False):
+    def __init__(self, factor_num, sequence, fully_connect_layer_neural, attention=False):
         super(AlphaNet_LSTM_V1, self).__init__()
         self.factor_num = factor_num  # 108
         self.sequence = sequence
         self.fc2_neuron = fully_connect_layer_neural  # 32
         self.attention = attention
-        self.transformer = transformer
         # Layer
         self.batch = torch.nn.BatchNorm1d(self.sequence * self.factor_num)
         self.lstm = nn.LSTM(self.factor_num, self.fc2_neuron, 3, batch_first=True, bidirectional=True, dropout=0.2)
@@ -40,8 +39,6 @@ class AlphaNet_LSTM_V1(nn.Module):
         self.relu = nn.ReLU()
         self.LeakyReLU = nn.LeakyReLU()
         self.out = nn.Linear(self.fc2_neuron, 1)
-        if self.transformer == True:
-            self.TransformerLayer = nn.TransformerEncoderLayer(d_model=self.fc2_neuron * 2, nhead=2, batch_first=True)
 
     def forward(self, x):
         x = x.reshape(x.shape[0], -1).float()
@@ -49,10 +46,7 @@ class AlphaNet_LSTM_V1(nn.Module):
         x = x.reshape(x.shape[0], self.sequence, self.factor_num)
 
         x, _ = self.lstm(x)  # x.shape: torch.Size([6182, 10, 128])
-        if self.transformer == True:
-            x = self.TransformerLayer(x)  # attn_output = torch.Size([512, 20, 128])
-        else:
-            x = self.LeakyReLU(x)
+        x = self.LeakyReLU(x)
 
         x = torch.transpose(x, 1, 2)  # x.shape: torch.Size([6182, 128, 10])
         x = self.batch2(x)
@@ -82,40 +76,46 @@ class AlphaNet_LSTM_V1(nn.Module):
             2)  # [batch_size, n_hidden * num_directions(=2)]
         return output, attn_weights
 
+
 class Res_LSTM(nn.Module):
-    def __init__(self, dimention, factor_num, sequence, fully_connect_layer_neural, layer_num=2, transformer=False):
+    def __init__(self, dimention, factor_num, sequence):
         super(Res_LSTM, self).__init__()
         self.factor_num = factor_num  # 108
         self.sequence = sequence  #
-        self.dimention = dimention  #
-        self.fc2_neuron = fully_connect_layer_neural  # 32
-        self.transformer = transformer
-
+        self.dimention = dimention
         # Layer
         self.bn1 = torch.nn.BatchNorm1d(self.dimention * self.factor_num * self.sequence)
-        self.bn2 = torch.nn.BatchNorm1d(self.fc2_neuron * 2 * self.sequence)
-        self.bn3 = torch.nn.BatchNorm1d(self.fc2_neuron * 2)
-        if self.transformer == True:
-            self.q_metrix = nn.Linear(self.factor_num, self.factor_num)
-            self.k_metrix = nn.Linear(self.factor_num, self.factor_num)
-            self.v_metrix = nn.Linear(self.factor_num, self.factor_num)
-            self.MultiheadAttention = nn.MultiheadAttention(self.factor_num, layer_num, batch_first=True)
+        self.bn2 = torch.nn.BatchNorm1d(self.factor_num * 2 * self.sequence)
+        self.bn3 = torch.nn.BatchNorm1d(self.factor_num * 2)
 
-        self.lstm = nn.LSTM(self.factor_num, self.fc2_neuron, layer_num, batch_first=True, bidirectional=True,
+        self.lstm = nn.LSTM(self.factor_num, self.factor_num, 2, batch_first=True, bidirectional=True,
                             dropout=0.2)
+        self.TransformerLayer1 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
+        self.TransformerLayer2 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
+        self.TransformerLayer3 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
+        self.TransformerLayer4 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
+
         self.dropout = nn.Dropout(0.2)
         self.LeakyReLU = nn.LeakyReLU()
-        self.out = nn.Linear(self.fc2_neuron * 2, 1)
+        self.out = nn.Linear(self.factor_num * 2, 1)
 
     def forward(self, x):
         x = self.norm_1(x)
         x = torch.transpose(x, 0, 1)  # x.shape: torch.Size([3, 512, 20, 108])
 
-        final, (hn, cn) = self.lstm_layer(x[0], 2)  # torch.Size([512, 20, 128])
-        for i in range(1, x.shape[0]):
-            add, _ = self.lstm_layer(x[i], 2)
-            final = self.skip_connection(final, add)
-        # start = torch.Size([512, 20, 128])
+        final, (hn, cn) = self.lstm(x[0])  # torch.Size([512, 20, 128])
+
+        # Encoder 1
+        encoder1_1 = self.TransformerLayer1(x[1])
+        encoder1_2 = self.TransformerLayer2(x[1])
+        encoder1 = torch.cat([encoder1_1, encoder1_2], dim=2)
+        final = self.skip_connection(final, encoder1)
+
+        # Encoder 1
+        encoder2_1 = self.TransformerLayer3(x[2])
+        encoder2_2 = self.TransformerLayer4(x[2])
+        encoder2 = torch.cat([encoder2_1, encoder2_2], dim=2)
+        final = self.skip_connection(final, encoder2)
 
         x, _ = self.attention_net(final, hn)
         x = self.bn3(x)
@@ -138,20 +138,8 @@ class Res_LSTM(nn.Module):
         x = x.reshape(original_shape)
         return x
 
-    def lstm_layer(self, x, layer_num):
-        if self.transformer == True:
-            q = self.q_metrix(x)
-            k = self.k_metrix(x)
-            v = self.v_metrix(x)
-            x, x_weight = self.MultiheadAttention(q, k, v)  # attn_output = torch.Size([512, 20, 128])
-        else:
-            pass
-        # out = torch.Size([512, 20, 128])
-        out, (hn, cn) = self.lstm(x)
-        return out, (hn, cn)
-
     def skip_connection(self, origin, add):
-        return self.norm_2(origin + add)
+        return self.norm_2(origin + add)  # torch.Size([1024, 20, 216])
 
     def attention_net(self, lstm_output, final_state):
         # lstm_output : [batch_size, n_step, n_hidden * num_directions(=2)], F matrix
