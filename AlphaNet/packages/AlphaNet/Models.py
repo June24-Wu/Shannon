@@ -90,10 +90,10 @@ class Res_LSTM(nn.Module):
 
         self.lstm = nn.LSTM(self.factor_num, self.factor_num, 2, batch_first=True, bidirectional=True,
                             dropout=0.2)
-        self.TransformerLayer1 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
-        self.TransformerLayer2 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
-        self.TransformerLayer3 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
-        self.TransformerLayer4 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=2, batch_first=True)
+        self.TransformerLayer1 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=1, batch_first=True)
+        self.TransformerLayer2 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=1, batch_first=True)
+        self.TransformerLayer3 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=1, batch_first=True)
+        self.TransformerLayer4 = nn.TransformerEncoderLayer(d_model=self.factor_num, nhead=1, batch_first=True)
 
         self.dropout = nn.Dropout(0.2)
         self.LeakyReLU = nn.LeakyReLU()
