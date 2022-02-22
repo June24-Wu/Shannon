@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  ResLstm_8Input_corr_filter_Shift_1_Sequence_20
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  20
+LR:  [0.001, 1e-05, 1e-07]
+epoch_num:  [30, 30, 30]
+feature_num:  54
+
+
+                    IC_ResLstm_1d   IC_ResLstm_2d   IC_ResLstm_3d   IC_ResLstm_4d   IC_ResLstm_5d
+period                                                                                           
+20190102-20190531  4.44 5.34 0.83  5.64 6.12 0.92  6.32 6.81 0.93  6.86 7.15 0.96  7.11 7.32 0.97
+
+
+                   stock_num    return   ret_std   ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                              
+20190102-20190531        343  5.274992  6.032956  13.330615  1.811686  58.163265  4.38(20190109-20190131)  1.49(20190131)  51.111356
+
+
+****************************************************************************************************

@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  AlphaNetV4_Moving10_Shift_1_Sequence_20_10dRet
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  20
+LR:  [0.001, 1e-05, 1e-07]
+epoch_num:  [30, 30, 30]
+feature_num:  103
+
+
+                  IC_AlphaNetV4_1d IC_AlphaNetV4_2d IC_AlphaNetV4_3d IC_AlphaNetV4_4d IC_AlphaNetV4_5d
+period                                                                                                
+20190102-20190531   3.56 4.88 0.73   4.65 5.51 0.84   5.29 6.04 0.88   5.89 6.16 0.96   6.23 6.34 0.98
+
+
+                   stock_num    return   ret_std   ret_year   sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                             
+20190102-20190531        346  4.364628  5.480196  10.959674  1.62123  53.061224  3.94(20190109-20190131)  1.04(20190131)  51.044455
+
+
+****************************************************************************************************

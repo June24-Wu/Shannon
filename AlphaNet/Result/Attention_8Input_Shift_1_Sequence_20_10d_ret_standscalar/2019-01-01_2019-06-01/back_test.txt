@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  Attention_8Input_Shift_1_Sequence_20_10d_ret_standscalar
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  20
+LR:  [0.001, 1e-05, 1e-07]
+epoch_num:  [30, 30, 30]
+feature_num:  88
+
+
+                  IC_Attention_1d IC_Attention_2d IC_Attention_3d IC_Attention_4d IC_Attention_5d
+period                                                                                           
+20190102-20190531  3.68 4.97 0.74  4.97 5.94 0.84  5.54 6.45 0.86  6.06 6.57 0.92  6.43 6.71 0.96
+
+
+                   stock_num    return   ret_std  ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                             
+20190102-20190531        346  3.257551  5.488855   8.11613  1.140821  56.122449  4.07(20190109-20190131)  0.93(20190129)  51.035719
+
+
+****************************************************************************************************

@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  AlphaNet_8Input_FundsHeavyHoldings_200_Shift_1_Sequence_20_10dRet
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  20
+LR:  [0.001, 1e-05]
+epoch_num:  [30, 30]
+feature_num:  88
+
+
+                   IC_AlphaNet_1d   IC_AlphaNet_2d   IC_AlphaNet_3d   IC_AlphaNet_4d   IC_AlphaNet_5d
+period                                                                                               
+20190102-20190531  3.42 9.88 0.35  3.57 10.73 0.33  3.36 11.46 0.29  4.05 12.08 0.34  3.91 11.58 0.34
+
+
+                   stock_num    return    ret_std   ret_year  sharpe  win_ratio             max_dd|period max_dd_day|date   turnover
+period                                                                                                                              
+20190102-20190531         21  4.839339  13.163348  12.192321  0.7364  52.040816  13.02(20190211-20190307)  2.78(20190307)  47.488448
+
+
+****************************************************************************************************

@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  AlphaNet_No_Return_Shift_5_Sequence_6_10d_ret_standscalar
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  6
+LR:  [0.001, 1e-05, 1e-07]
+epoch_num:  [30, 30, 30]
+feature_num:  99
+
+
+                   IC_AlphaNet_1d  IC_AlphaNet_2d  IC_AlphaNet_3d  IC_AlphaNet_4d  IC_AlphaNet_5d
+period                                                                                           
+20190102-20190531  3.10 5.14 0.60  4.14 5.93 0.70  4.74 6.31 0.75  5.25 6.59 0.80  5.79 6.53 0.89
+
+
+                   stock_num    return  ret_std  ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                            
+20190102-20190531        348 -0.176806  5.55384 -0.429862 -0.378292  52.040816  5.15(20190109-20190429)  1.00(20190131)  61.637508
+
+
+****************************************************************************************************

@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  AlphaNet_8Input_corr_filter_Shift_1_Sequence_20_10dRet
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  20
+LR:  [0.001, 1e-05]
+epoch_num:  [30, 30]
+feature_num:  54
+
+
+                   IC_AlphaNet_1d  IC_AlphaNet_2d  IC_AlphaNet_3d  IC_AlphaNet_4d  IC_AlphaNet_5d
+period                                                                                           
+20190102-20190531  3.43 4.58 0.75  4.55 5.20 0.87  4.98 5.53 0.90  5.46 5.76 0.95  5.91 5.94 1.00
+
+
+                   stock_num    return   ret_std  ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                             
+20190102-20190531        346  1.721715  5.832058  4.243126  0.432539  59.183673  4.45(20190109-20190131)  1.23(20190131)  51.389878
+
+
+****************************************************************************************************

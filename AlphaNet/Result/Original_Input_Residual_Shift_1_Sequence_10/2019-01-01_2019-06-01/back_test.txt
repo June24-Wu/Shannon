@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  Original_Input_Residual_Shift_1_Sequence_10
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  10
+LR:  [0.001, 0.0001, 1e-05]
+epoch_num:  [30, 30, 30]
+feature_num:  9
+
+
+                   IC_Original_1d  IC_Original_2d  IC_Original_3d  IC_Original_4d  IC_Original_5d
+period                                                                                           
+20190102-20190531  2.12 3.73 0.57  2.42 4.08 0.59  2.52 4.73 0.53  2.64 4.68 0.56  2.62 4.97 0.53
+
+
+                   stock_num    return   ret_std   ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                              
+20190102-20190531        350 -6.847153  4.964095 -15.858004 -4.221488  37.755102  8.93(20190102-20190524)  1.05(20190314)  72.404991
+
+
+****************************************************************************************************

@@ -1,0 +1,23 @@
+****************************************************************************************************
+
+
+Alpha_Name:  Original_Input_TsStand_Concated_Shift_1_Sequence_10
+start_date:  2019-01-01
+end_date:  2019-06-01
+sequence:  10
+LR:  [0.001, 0.0001, 1e-05]
+epoch_num:  [30, 30, 30]
+feature_num:  18
+
+
+                   IC_Original_1d  IC_Original_2d  IC_Original_3d  IC_Original_4d  IC_Original_5d
+period                                                                                           
+20190102-20190531  3.79 6.02 0.63  4.78 6.90 0.69  5.22 7.48 0.70  5.65 7.94 0.71  5.99 8.08 0.74
+
+
+                   stock_num   return   ret_std  ret_year    sharpe  win_ratio            max_dd|period max_dd_day|date   turnover
+period                                                                                                                            
+20190102-20190531        348 -0.02595  5.412138 -0.063159 -0.374833  55.102041  3.57(20190102-20190131)  0.95(20190314)  51.750377
+
+
+****************************************************************************************************
