@@ -1,14 +1,6 @@
 import time
 import datetime
 import os
-from Research.backtest.bt import BTDaily
-import matplotlib.pyplot as plt
-from Research.feature.ft import FeatureAnalysis
-import Research.utils.namespace as namespace
-import Research.utils.normalization as norm
-from Platform.database.mysql import MysqlAPI
-from Platform.utils.persistence import convert_to_standard_daily_feature_csv, convert_to_standard_daily_feature_par
-from Platform.config.mysql_info import FACTOR_LIB_MYSQL_TIO
 import DataAPI
 from os import walk
 import pandas as pd
@@ -19,9 +11,10 @@ from progressbar import ProgressBar
 from tqdm import tqdm
 import multiprocessing as mp
 import sys
-sys.path.append("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/packages/")
+sys.path.append("/AlphaNet/packages/")
 import AlphaNet
 from AlphaNet.Data import concat_original_data , generate_shift_data
+
 # read_task
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
 factor_info = task_info["Factor"]
@@ -45,8 +38,8 @@ print(factor_info.loc[factor_index,:])
 output_path = "/home/wuwenjun/Data/"
 
 if alpha_name not in os.listdir(output_path):
-    concat_original_data(alpha_name=alpha_name,alpha_list=alpha_list,output_path=output_path,universe = universe)
-generate_shift_data(alpha_name=alpha_name,shift=shift,sequence=sequence,target=target,data_path=output_path)
+    concat_original_data(alpha_name=alpha_name,alpha_list=alpha_list,output_path=output_path,universe = universe) # concat feature
+generate_shift_data(alpha_name=alpha_name,shift=shift,sequence=sequence,target=target,data_path=output_path) # shift feature into the two dimention metrix
 
 # Task Generation
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
@@ -83,4 +76,4 @@ t2 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('_%H:%M
 factor_info.loc[factor_index,"status"] = "Finish: " +t1+t2
 task_info["CPU"] = True
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
-np.save("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/Factor_Description/Task.npy",task_info)
+np.save("/AlphaNet/Factor_Description/Task.npy", task_info)

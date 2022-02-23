@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1/AlphaNet_LSTM_V1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Automatic_Training/Generate_Data_Par.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1/Generate_Data_Par.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlphaNet/Automatic_Training/Res_LSTM.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/Res_LSTM/Res_LSTM.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/1.30/load 3 dimention data.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.30/load 3 dimention data.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/2.13/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/2.13/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/2.17/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/2.17/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +41,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/AlphaNet/Automatic_Training/AlphaNet_LSTM_V1" />
+      <recent name="$PROJECT_DIR$/AlphaNet/Automatic_Training/Res_LSTM" />
       <recent name="$PROJECT_DIR$/AlphaNet/AlphaNet/DataProcessing" />
     </key>
   </component>

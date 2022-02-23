@@ -1,37 +1,28 @@
 import time
 import datetime
 import os
-from Research.backtest.bt import BTDaily
 import matplotlib.pyplot as plt
 from Research.feature.ft import FeatureAnalysis
 import Research.utils.namespace as namespace
 import Research.utils.normalization as norm
-from Platform.database.mysql import MysqlAPI
 from Platform.utils.persistence import convert_to_standard_daily_feature_csv, convert_to_standard_daily_feature_par
-from Platform.config.mysql_info import FACTOR_LIB_MYSQL_TIO
-import DataAPI
 from os import walk
 import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
-from progressbar import ProgressBar
 from tqdm import tqdm
-import multiprocessing as mp
 import sys
-sys.path.append("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/packages/")
+sys.path.append("/AlphaNet/packages/")
 import AlphaNet
 from AlphaNet.Data import DataLoader
-from AlphaNet.Models import AlphaNet_LSTM_V1
-# import AlphaNet.packages.AlphaNet as AlphaNet
-# from AlphaNet.packages.AlphaNet.Data import DataLoader
-# from AlphaNet.packages.AlphaNet.Models import AlphaNet_LSTM_V1
+from AlphaNet.Models import Res_LSTM
 
 # read_task
 task_info = np.load("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",allow_pickle=True).item()
 device = task_info["Cuda"].pop()
 task = task_info["Task"]
-task_index = task[task["status"] == "waiting"].index[0]
+task_index = task[task["status"] == "res_lstm"].index[0]
 Alpha_Name = task.loc[task_index,"Alpha_Name"]
 start_date = task.loc[task_index,"start_date"]
 end_date = task.loc[task_index,"end_date"]
@@ -40,7 +31,7 @@ LR = task.loc[task_index,"LR"]
 epoch_num = task.loc[task_index,"epoch_num"]
 feature_num = task.loc[task_index,"feature_num"]
 t1 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%H:%M')
-task.loc[task_index,"status"] = device + " : "+ t1 
+task.loc[task_index,"status"] = device + " : "+ t1
 np.save("/home/ShareFolder/feature_platform/ti0/wuwenjun/#Factor_Description/Task.npy",task_info)
 
 # file path
@@ -66,12 +57,12 @@ f.close()
 
 trainloader = DataLoader()
 trainloader.load_data_from_file(alpha_name = Alpha_Name,end_date = start_date,data_path=data_path)
-train_loader = trainloader.to_torch_DataLoader(shape = [sequence,feature_num],batch_size=512,shuffle=True)
+train_loader = trainloader.to_torch_DataLoader(shape = [3,sequence,feature_num],shuffle=True)
 
 # Model Loader
 
 loss_function = nn.MSELoss()
-model = AlphaNet_LSTM_V1(feature_num,sequence,64,attention = True)
+model = Res_LSTM(3,feature_num,sequence)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR[0])
 model_loader = AlphaNet.Model_Loader(model = model,device=device)
 print(model_loader.model)
@@ -86,7 +77,7 @@ for i in range(1,len(LR)):
 # Test
 testloader = DataLoader()
 testloader.load_data_from_file(alpha_name = Alpha_Name,start_date = start_date,end_date = end_date,data_path = data_path)
-test_loader = testloader.to_torch_DataLoader(shape = [sequence,feature_num],shuffle=False)
+test_loader = testloader.to_torch_DataLoader(shape = [3,sequence,feature_num],shuffle=False)
 pred = model_loader.pred(test_loader)
 
 # convert to standard daily and back test
