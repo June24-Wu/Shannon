@@ -6,6 +6,7 @@ import DataAPI
 import os
 import Research.utils.namespace as namespace
 from tqdm import tqdm
+import time
 from Research.feature.ft import FeatureAnalysis
 
 def convert_to_standard_daily_data_par(df: pd.DataFrame, output_name: str, output_path: str):
@@ -152,7 +153,7 @@ class DataLoader(object):
         self.y = None
         self.shape = None
 
-    def load_data_from_file(self,alpha_name, end_date,data_path = "/home/wuwenjun/Data/", start_date="2015-01-01"):
+    def load_data_from_file(self,alpha_name,data_path = "/home/wuwenjun/Data/", start_date="2015-01-01",end_date = time.strftime("%Y-%m-%d", time.localtime()) ):
         time_list = DataAPI.get_trading_days(start_date, end_date)
         final = []
         for date in tqdm(time_list):
