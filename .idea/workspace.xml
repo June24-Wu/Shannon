@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="abe17a8c-dcb4-4ed0-96d6-7f6edabc19bd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/AlphaNet/Automatic_Training/Fine_Tuning.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlphaNet/Code Example/Task Monitoring.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AlphaNet/Code Example/Task Monitoring.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test/1.30/NN test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/1.30/NN test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/12.29/5_day_change.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test/2.13/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test/2.13/Untitled.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
