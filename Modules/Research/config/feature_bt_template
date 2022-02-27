@@ -1,0 +1,27 @@
+{
+    "feature_data_format": "csv",
+    "db": "factor_lib_ti0",
+    "freq": "daily",
+    "ti": 0,
+    "return_path_daily": "/home/DataFolder/Stock/Derivatives/RetData/Daily",
+    "return_path_minute": "/home/DataFolder/Stock/Derivatives/RetData/Minute",
+    "corr_path": "/home/ShareFolder/lgc/data",
+
+    "score_sorted": false,
+    "daily_data_missing_allowed": true,
+    "data_format": "dataframe",
+    "mode": "intersect",
+    "bt_price": "close",
+    "trading_type": "long-only",
+    "trade_period": 0,
+    "stock_percentage": true,
+    "stock_num": 0.1,
+    "constant_trading_stock_num": false,
+    "weight": "equal",
+    "benchmark": "ZZ500",
+    "transmission_rate": 0.00025,
+    "tax_rate": 0.001,
+    "universe": "All",
+    "initial_fund": 100000000,
+    "change_pos_threshold": 0.0
+}

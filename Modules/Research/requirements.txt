@@ -1,0 +1,9 @@
+PyMySQL~=1.0.2
+DBUtils~=1.2
+pandas~=1.2.0
+exobject~=0.3
+tqdm~=4.55.0
+redis~=3.5.0
+tabulate~=0.8.7
+numpy~=1.19.3
+pyarrow~=3.0.0
