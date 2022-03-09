@@ -6,6 +6,9 @@ import sys
 sys.path.append("/home/wuwenjun/jupyter_code/Shannon/AlphaNet/packages/")
 import AlphaNet
 from AlphaNet.Data import concat_original_data , generate_shift_data , DataLoader
+import multiprocessing as mp
+from tqdm import tqdm
+import time
 
 
 alpha_name = input("Please Input the [Alpha_Name] that you want to load three dimention data: ")
@@ -18,14 +21,14 @@ factor_info = task_info["Factor"]
 if task_info["CPU"] == False:
     raise ValueError("No CPU is avaliable")
 factor_index = factor_info[factor_info["Alpha_Name"] == alpha_name].index
-alpha_name = factor_info.loc[factor_index,"Alpha_Name"]
-shift = factor_info.loc[factor_index,"shift"]
-sequence = factor_info.loc[factor_index,"sequence"]
-target = factor_info.loc[factor_index,"target"]
-LR = factor_info.loc[factor_index,"LR"]
-epoch_num = factor_info.loc[factor_index,"epoch_num"]
-alpha_list = factor_info.loc[factor_index,"alpha_list"]
-universe = factor_info.loc[factor_index,"universe"]
+alpha_name = factor_info.loc[factor_index,"Alpha_Name"].item()
+shift = factor_info.loc[factor_index,"shift"].item()
+sequence = factor_info.loc[factor_index,"sequence"].item()
+target = factor_info.loc[factor_index,"target"].item()
+LR = factor_info.loc[factor_index,"LR"].item()
+epoch_num = factor_info.loc[factor_index,"epoch_num"].item()
+alpha_list = factor_info.loc[factor_index,"alpha_list"].item()
+universe = factor_info.loc[factor_index,"universe"].item()
 t1 = (datetime.datetime.utcnow() + datetime.timedelta(hours=8)).strftime('%H:%M')
 factor_info.loc[factor_index,"status"] = "Running: " +t1
 task_info["CPU"] = False
@@ -52,14 +55,16 @@ for split in split_day[1:]:
     generate_shift_data(alpha_name=alpha_name_temp, shift=shift, sequence=sequence, target=None,
                         data_path=output_path)
 
-
 final_df = []
-for i in alpha_name_list:
+for i in tqdm(alpha_name_list):
     loader = DataLoader()
-    loader.load_data_from_file(alpha_name="i",data_path=output_path)
+    loader.load_data_from_file(alpha_name=i, data_path=output_path)
     final_df.append(loader.feature_data)
-final_df = pd.concat(final_df,axis=1)
-final_df.dropna(axis=0,inplace=True)
+
+print("Start Concat Result")
+final_df = pd.concat(final_df, axis=1)
+print("Start Drop NaN")
+final_df.dropna(axis=0, inplace=True)
 
 AlphaNet.Data.convert_to_standard_daily_data_par(final_df,alpha_name,output_path)
 
